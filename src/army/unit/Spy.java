@@ -8,7 +8,7 @@ public class Spy extends Unit {
 
     @Override
     public void battle(Unit enemyUnit) {
-        if (enemyUnit.getType().equals("Marshal")) {
+        if (enemyUnit instanceof Marshal) {
             this.position = enemyUnit.position;
             enemyUnit.die();
             return;

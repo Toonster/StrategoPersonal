@@ -19,4 +19,8 @@ public class Tile {
     public void clear() {
         character = ' ';
     }
+
+    public boolean isFree() {
+        return character == ' ';
+    }
 }

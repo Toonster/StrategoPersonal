@@ -76,7 +76,10 @@ public class Game {
         Unit selectedUnit = currentArmy.getUnitAtPosition(position);
         Position destination = currentPlayer.selectDestination();
         if (board.isInBounds(destination) && selectedUnit.canMoveTo(destination)) {
-            if (!currentArmy.hasUnitAtPosition(destination) && !currentArmy.hasUnitAtPosition(destination)) {
+            if (selectedUnit.isScout() && !board.tilesAreFree(selectedUnit.getDestinationPath(destination))) {
+                return;
+            }
+            if (board.tileIsFree(destination)) {
                 currentArmy.placeUnit(selectedUnit,position);
                 return;
             }

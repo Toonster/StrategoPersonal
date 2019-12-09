@@ -8,7 +8,7 @@ public class Miner extends Unit {
 
     @Override
     public void battle(Unit enemyUnit) {
-        if (enemyUnit.getType().equals("Bomb")) {
+        if (enemyUnit instanceof Bomb) {
             this.position = enemyUnit.position;
             enemyUnit.die();
             return;

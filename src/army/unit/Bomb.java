@@ -3,7 +3,7 @@ package army.unit;
 public class Bomb extends Unit {
 
     public Bomb() {
-        super(0, 0);
+        super(0, 11);
     }
 
     @Override
@@ -11,12 +11,4 @@ public class Bomb extends Unit {
         return "B";
     }
 
-    @Override
-    public void battle(Unit enemyUnit) {
-        if (enemyUnit.getType().equalsIgnoreCase("Miner")) {
-            this.die();
-            return;
-        }
-        enemyUnit.die();
-    }
 }

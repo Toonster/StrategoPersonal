@@ -46,4 +46,18 @@ public class Board {
     public boolean isInBounds(Position position) {
         return (position.getX() >= 0 || position.getX() < WIDTH  || position.getY() >= 0 || position.getY() < HEIGTH);
     }
+
+    public boolean tilesAreFree(List<Position> tilePositions) {
+        boolean tilesAreFree = true;
+        for (Position position : tilePositions) {
+            if (!tileIsFree(position)) {
+                tilesAreFree = false;
+            }
+        }
+        return tilesAreFree;
+    }
+
+    public boolean tileIsFree(Position tilePosition) {
+        return gameField[tilePosition.getX()][tilePosition.getY()].isFree();
+    }
 }

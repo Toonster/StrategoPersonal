@@ -2,15 +2,13 @@ package army.unit;
 
 import common.Position;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public abstract class Unit {
 
     private int movementSpeed;
     private int strength;
-    private Position position;
+    protected Position position;
     private boolean isAlive = true;
+    private String weakness;
 
     public Unit(int movementSpeed, int power) {
         this.movementSpeed = movementSpeed;
@@ -21,7 +19,7 @@ public abstract class Unit {
         return strength;
     }
 
-    public void dies() {
+    public void die() {
         isAlive = false;
         position = null;
     }
@@ -31,27 +29,20 @@ public abstract class Unit {
     }
 
     public boolean canMoveTo(Position destination) {
-        boolean canMoveTo = false;
-        List<Position> availableDestinationPositions = new ArrayList<>();
-        availableDestinationPositions.add(new Position(position.getX() + movementSpeed,position.getY()));
-        availableDestinationPositions.add(new Position(position.getX() - movementSpeed,position.getY()));
-        availableDestinationPositions.add(new Position(position.getX(),position.getY() + movementSpeed));
-        availableDestinationPositions.add(new Position(position.getX(),position.getY() - movementSpeed));
-        if (availableDestinationPositions.contains(destination)) {
-            canMoveTo = true;
-        }
-        return canMoveTo;
+        int deltaX = Math.abs(this.position.getX() - destination.getX());
+        int deltaY = Math.abs(this.position.getY() - destination.getY());
+        return deltaX <= this.movementSpeed && deltaY <= this.movementSpeed;
     }
 
     public void place(Position position) {
         this.position = position;
     }
 
-    public Position getPosition() {
+   /* public Position getPosition() {
         return position;
-    }
+    }*/
 
-    public String getUnitType() {
+    public String getType() {
         return getClass().getName();
     }
 
@@ -60,12 +51,18 @@ public abstract class Unit {
     }
 
     public void battle(Unit enemyUnit) {
+        if (enemyUnit.getType().equals("Bomb")) {
+            die();
+        }
         if (strength > enemyUnit.strength) {
-            position = enemyUnit.getPosition();
-            enemyUnit.dies();
+            this.position = enemyUnit.position;
+            enemyUnit.die();
             return;
         }
-        dies();
+        if (strength == enemyUnit.strength) {
+            enemyUnit.die();
+        }
+        die();
     }
 
     public int getX() {
@@ -78,5 +75,9 @@ public abstract class Unit {
 
     public boolean isPlaced() {
         return this.isAlive && this.position != null;
+    }
+
+    public boolean atPosition(Position position) {
+        return this.position.equals(position);
     }
 }

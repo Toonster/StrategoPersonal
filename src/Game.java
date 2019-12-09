@@ -26,12 +26,16 @@ public class Game {
 
     public void start() {
         while (!currentArmy.allUnitsPlaced() && !enemyArmy.allUnitsPlaced()) {
-            while (currentArmy.hasUnitsToPlace()) {
-                placeUnit();
-                update();
-                board.draw();
-            }
+            placeArmy();
             swapTurns();
+        }
+    }
+
+    public void placeArmy() {
+        while (currentArmy.hasUnitsToPlace()) {
+            placeUnit();
+            update();
+            board.draw();
         }
     }
 
@@ -62,6 +66,7 @@ public class Game {
         while (!currentArmy.isDefeated() && !enemyArmy.isDefeated()) {
             processTurn();
             update();
+            board.draw();
             swapTurns();
         }
     }

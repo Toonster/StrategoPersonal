@@ -37,7 +37,7 @@ public class Human extends Player {
 
         System.out.println("Choose a unit to place!");
         System.out.println("Index. - Name - (Strength)");
-        for (int i = 0; i < unitsToPlace.size(); i++) System.out.printf("%d. - %s - (%d)\n", i, unitsToPlace.get(i).getUnitType(), unitsToPlace.get(i).getStrength());
+        for (int i = 0; i < unitsToPlace.size(); i++) System.out.printf("%d. - %s - (%d)\n", i, unitsToPlace.get(i).getType(), unitsToPlace.get(i).getStrength());
         boolean indexIsInvalid = true;
         int index = 0;
         while (indexIsInvalid) {

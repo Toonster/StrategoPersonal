@@ -10,4 +10,9 @@ public class Flag extends Unit {
     public String toString() {
         return "F";
     }
+
+    @Override
+    public void battle(Unit enemyUnit) {
+        die();
+    }
 }

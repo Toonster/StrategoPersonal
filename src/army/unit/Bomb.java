@@ -10,4 +10,13 @@ public class Bomb extends Unit {
     public String toString() {
         return "B";
     }
+
+    @Override
+    public void battle(Unit enemyUnit) {
+        if (enemyUnit.getType().equalsIgnoreCase("Miner")) {
+            this.die();
+            return;
+        }
+        enemyUnit.die();
+    }
 }

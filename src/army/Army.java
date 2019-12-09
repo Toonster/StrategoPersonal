@@ -50,18 +50,8 @@ public class Army {
         return totalStrength;
     }
 
-    public void unitDies(Unit unit) {
-        units.remove(unit);
-        deadUnits.add(unit);
-    }
-
     public Unit getUnitAtPosition(Position position){
-        for (Unit unit : units) {
-            if (unit.getPosition().equals(position)) {
-                return unit;
-            }
-        }
-        return null;
+        return (Unit) units.stream().filter(unit -> unit.atPosition(position));
     }
 
 /*    public List<common.Position> getUnitPositions() {

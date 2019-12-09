@@ -2,10 +2,11 @@ package board;
 
 public class Tile {
 
-    private char character;
+    private char character = ' ';
+    private Surface surface;
 
-    public Tile(char character) {
-        this.character = character;
+    public Tile(Surface surface) {
+        this.surface = surface;
     }
 
     public void draw() {
@@ -23,4 +24,5 @@ public class Tile {
     public boolean isFree() {
         return character == ' ';
     }
+
 }

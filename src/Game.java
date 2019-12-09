@@ -79,7 +79,7 @@ public class Game {
             if (selectedUnit.isScout() && !board.tilesAreFree(selectedUnit.getDestinationPath(destination))) {
                 return;
             }
-            if (board.tileIsFree(destination)) {
+            if (board.tileIsFree(destination)){
                 currentArmy.placeUnit(selectedUnit,position);
                 return;
             }
@@ -107,3 +107,7 @@ public class Game {
         enemyArmy = tempArmy;
     }
 }
+
+(6,0) (0 ,0 )
+
+

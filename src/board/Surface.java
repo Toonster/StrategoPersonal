@@ -1,11 +1,14 @@
 package board;
 
-public class Surface extends Tile {
+public class Surface {
 
-    private boolean isAccessible;
+    private boolean accessible;
 
-    public Surface(char character, boolean isAccessible) {
-        super(character);
-        this.isAccessible = isAccessible;
+    public Surface( boolean accessible) {
+        this.accessible = accessible;
+    }
+
+    public boolean isAccessible() {
+        return accessible;
     }
 }

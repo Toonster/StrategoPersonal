@@ -20,10 +20,10 @@ public class Board {
         for (int y = 0; y < HEIGTH; y++) {
             for (int x = 0; x < WIDTH; x++) {
                 if ((y == 4 || y == 5) && (x == 2 || x == 3 || x == 6 || x == 7)) {
-                    gameField[x][y] = new Water();
+                    gameField[x][y] = new Tile(new Water());
                     continue;
                 }
-                gameField[x][y] = new Grass();
+                gameField[x][y] = new Tile(new Grass());
             }
         }
     }
@@ -44,7 +44,7 @@ public class Board {
     }
 
     public boolean isInBounds(Position position) {
-        return (position.getX() >= 0 || position.getX() < WIDTH  || position.getY() >= 0 || position.getY() < HEIGTH);
+        return position.getX() >= 0 && position.getX() < WIDTH  && position.getY() >= 0 && position.getY() < HEIGTH &&;
     }
 
     public boolean tilesAreFree(List<Position> tilePositions) {

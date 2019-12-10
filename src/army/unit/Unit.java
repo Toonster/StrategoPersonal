@@ -77,19 +77,23 @@ public abstract class Unit {
         return this.position.equals(position);
     }
 
-    public List<Position> getDestinationPath(Position destination) {
+    public List<Position> getPathTo(Position destination) {
+
         List<Position> destinationPath = new ArrayList<>();
-        int deltaX = Math.abs(this.position.getX() - destination.getX());
-        int deltaY = Math.abs(this.position.getY() - destination.getY());
-        for (int x = this.getX() + 1; x < x+deltaX; x++) {
-            for (int y = this.getY() + 1; y < y+deltaY; y++) {
-                destinationPath.add(new Position(x,y));
+
+        int xMin = Math.min(this.position.getX(), destination.getX());
+        int xMax = Math.max(this.position.getX(), destination.getX());
+        int yMin = Math.min(this.position.getY(), destination.getY());
+        int yMax = Math.max(this.position.getY(), destination.getY());
+
+        for (int x = xMin; x < xMax + 1; x++) {
+            for (int y = yMin; y < yMax + 1; y++) {
+                destinationPath.add(new Position(x, y));
             }
         }
-        return destinationPath;
-    }
 
-    public boolean isScout() {
-        return this instanceof Scout;
+        destinationPath.remove(destinationPath.size() - 1);
+        destinationPath.remove(0);
+        return destinationPath;
     }
 }

@@ -4,6 +4,7 @@ import army.unit.*;
 import common.Position;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,7 +13,6 @@ public class Army {
     private List<Unit> units;
     private List<Unit> deadUnits;
     private String color;
-    private boolean isDefeated;
 
     public Army(String color) {
         this.color = color;
@@ -54,14 +54,6 @@ public class Army {
         return (Unit) units.stream().filter(unit -> unit.atPosition(position));
     }
 
-/*    public List<common.Position> getUnitPositions() {
-        List<common.Position> unitPositions = new LinkedList<>();
-        for (unit.Unit unit : units) {
-            unitPositions.add(unit.getPosition());
-        }
-        return unitPositions;
-    }*/
-
     public void placeUnit(Unit unit, Position position) {
         unit.place(position);
     }
@@ -75,7 +67,7 @@ public class Army {
     }
 
     public boolean isDefeated() {
-        return isDefeated;
+        return units.stream().filter(unit -> unit instanceof Flag).noneMatch(Unit::isAlive);
     }
 
     public boolean hasUnitAtPosition(Position position) {
@@ -88,10 +80,6 @@ public class Army {
 
     public boolean hasUnitsToPlace() {
         return this.units.stream().anyMatch(unit -> !unit.isPlaced());
-    }
-
-    public boolean allUnitsPlaced() {
-        return this.units.stream().allMatch(Unit::isPlaced);
     }
 }
 

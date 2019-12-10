@@ -25,7 +25,7 @@ public class Game {
     }
 
     public void start() {
-        while (!currentArmy.allUnitsPlaced() && !enemyArmy.allUnitsPlaced()) {
+        while (currentArmy.hasUnitsToPlace() || enemyArmy.hasUnitsToPlace()) {
             placeArmy();
             swapTurns();
         }
@@ -44,7 +44,7 @@ public class Game {
             Unit selectedUnit = currentPlayer.selectUnitToPlace(unitsToPlace);
             Position unitDestination = currentPlayer.selectDestination();
             if (currentArmy.isStartingAvailablePositionAvailable(unitDestination)) {
-                if (!enemyArmy.allUnitsPlaced()) {
+                if (enemyArmy.hasUnitsToPlace()) {
                     unitDestination.add(new Position(0,6));
                 }
                 currentArmy.placeUnit(selectedUnit, unitDestination);
@@ -75,11 +75,8 @@ public class Game {
         Position position = currentPlayer.selectUnitPosition();
         Unit selectedUnit = currentArmy.getUnitAtPosition(position);
         Position destination = currentPlayer.selectDestination();
-        if (board.isInBounds(destination) && selectedUnit.canMoveTo(destination)) {
-            if (selectedUnit.isScout() && !board.tilesAreFree(selectedUnit.getDestinationPath(destination))) {
-                return;
-            }
-            if (board.tileIsFree(destination)){
+        if (board.isInBounds(destination) && selectedUnit.canMoveTo(destination) && board.tilesAreAvailable(selectedUnit.getPathTo(destination))) {
+            if (board.tileIsAvailable(destination)){
                 currentArmy.placeUnit(selectedUnit,position);
                 return;
             }
@@ -90,7 +87,7 @@ public class Game {
     }
 
     public void end() {
-
+        System.out.println("The game has ended!");
     }
 
     public void update() {
@@ -106,8 +103,13 @@ public class Game {
         enemyPlayer = tempPlayer;
         enemyArmy = tempArmy;
     }
-}
 
-(6,0) (0 ,0 )
+    public void loadGameState(SaveData gameState) {
+        currentPlayer = gameState.getCurrentPlayer();
+        enemyPlayer = gameState.getEnemyPlayer();
+        currentArmy = gameState.getCurrentArmy();
+        enemyArmy = gameState.getEnemyArmy();
+    }
+}
 
 

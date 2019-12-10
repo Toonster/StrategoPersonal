@@ -25,4 +25,7 @@ public class Tile {
         return character == ' ';
     }
 
+    public boolean isAccessible() {
+        return this.surface.isAccessible();
+    }
 }

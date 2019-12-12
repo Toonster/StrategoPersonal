@@ -12,4 +12,6 @@ public abstract class Player {
     public abstract Position selectDestination();
 
     public abstract Unit selectUnitToPlace(List<Unit> unitsToPlace);
+
+    public abstract boolean useStandardArmyConfig();
 }

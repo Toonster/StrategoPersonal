@@ -37,7 +37,7 @@ public class Human extends Player {
 
         System.out.println("Choose a unit to place!");
         System.out.println("Index. - Name - (Strength)");
-        for (int i = 0; i < unitsToPlace.size(); i++) System.out.printf("%d. - %s - (%d)\n", i, unitsToPlace.get(i).getClass().getName(), unitsToPlace.get(i).getStrength());
+        for (int i = 0; i < unitsToPlace.size(); i++) System.out.printf("%d. - %s", i, unitsToPlace.get(i).toString());
         boolean indexIsInvalid = true;
         int index = 0;
         while (indexIsInvalid) {
@@ -50,5 +50,10 @@ public class Human extends Player {
             indexIsInvalid = false;
         }
         return unitsToPlace.get(index);
+    }
+
+    @Override
+    public boolean useStandardArmyConfig() {
+        return false;
     }
 }

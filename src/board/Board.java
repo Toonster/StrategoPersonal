@@ -31,15 +31,25 @@ public class Board {
     public void draw() {
         for (int y = 0; y < HEIGTH; y++) {
             for (int x = 0; x < WIDTH; x++) {
+                System.out.print(" | ");
                 gameField[x][y].draw();
             }
+            System.out.print("|");
             System.out.println();
+        }
+    }
+
+    public void clear() {
+        for (int y = 0; y < HEIGTH; y++) {
+            for (int x = 0; x < WIDTH; x++) {
+                gameField[x][y].clear();
+            }
         }
     }
 
     public void update(List<Unit> units) {
         for (Unit unit: units){
-            gameField[unit.getX()][unit.getY()].update(unit.toString().charAt(0));
+            gameField[unit.getX()][unit.getY()].update(unit.getCharacter());
         }
     }
 

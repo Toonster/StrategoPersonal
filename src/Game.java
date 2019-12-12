@@ -7,6 +7,7 @@ import player.Player;
 import army.unit.Unit;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Game {
 
@@ -43,7 +44,7 @@ public class Game {
             List<Unit> unitsToPlace = currentArmy.getUnitsToPlace();
             Unit selectedUnit = currentPlayer.selectUnitToPlace(unitsToPlace);
             Position unitDestination = currentPlayer.selectDestination();
-            if (currentArmy.isStartingAvailablePositionAvailable(unitDestination)) {
+            if (currentArmy.isStartingPosition(unitDestination)) {
                 if (enemyArmy.hasUnitsToPlace()) {
                     unitDestination.add(new Position(0,6));
                 }
@@ -51,21 +52,11 @@ public class Game {
             }
     }
 
-/*    public void placeUnitOfArmyAtStart(List<unit.Unit> unitsToPlace) {
-        unit.Unit selectedUnit = currentPlayer.selectUnitToPlace(unitsToPlace);
-        common.Position unitDestination = currentPlayer.selectDestination();
-        List<common.Position> availableStartingPositions = currentArmy.getAvailableStartingPositions();
-        if (availableStartingPositions.contains(unitDestination)) {
-            currentArmy.placeUnit(selectedUnit, unitDestination);
-            availableStartingPositions.remove(unitDestination);
-            unitsToPlace.remove(selectedUnit);
-        }
-    }*/
-
     public void play() {
         while (!currentArmy.isDefeated() && !enemyArmy.isDefeated()) {
             processTurn();
             update();
+            currentArmy.showDeadUnits();
             board.draw();
             swapTurns();
         }
@@ -88,11 +79,14 @@ public class Game {
 
     public void end() {
         System.out.println("The game has ended!");
+        System.out.printf("The %s army won, congratulations!\n", enemyArmy.getColor());
     }
 
     public void update() {
+        board.clear();
         board.update(currentArmy.getUnits());
-        board.update(enemyArmy.getUnits());
+        List<Unit> invisibleEnemyUnits = enemyArmy.getUnits().stream().peek(unit -> unit.setChar('X')).collect(Collectors.toList());
+        board.update(invisibleEnemyUnits);
     }
 
     public void swapTurns() {
@@ -104,7 +98,22 @@ public class Game {
         enemyArmy = tempArmy;
     }
 
-    public void loadGameState(SaveData gameState) {
+    public void save(String fileName) {
+        GameState state = new GameState(currentPlayer, enemyPlayer, currentArmy, enemyArmy);
+        FileManager.write(state, fileName);
+    }
+
+    public void load(String fileName) {
+        GameState state = FileManager.read(fileName);
+        loadGameState(state);
+    }
+
+    public Army loadArmyConfig() {
+        GameState state = FileManager.read("ArmyConfig.txt");
+        currentArmy = state.getCurrentArmy();
+    }
+
+    public void loadGameState(GameState gameState) {
         currentPlayer = gameState.getCurrentPlayer();
         enemyPlayer = gameState.getEnemyPlayer();
         currentArmy = gameState.getCurrentArmy();

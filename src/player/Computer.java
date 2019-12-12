@@ -30,4 +30,9 @@ public class Computer extends Player {
         return unitsToPlace.get(rand.nextInt(unitsToPlace.size()));
         
     }
+
+    @Override
+    public boolean useStandardArmyConfig() {
+        return false;
+    }
 }

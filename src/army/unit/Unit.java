@@ -11,11 +11,12 @@ public abstract class Unit {
     private int strength;
     protected Position position;
     private boolean isAlive = true;
-    private String weakness;
+    private Character character;
 
-    public Unit(int movementSpeed, int power) {
+    public Unit(int movementSpeed, int power, Character character) {
         this.movementSpeed = movementSpeed;
         this.strength = power;
+        this.character = character;
     }
 
     public int getStrength() {
@@ -28,7 +29,8 @@ public abstract class Unit {
     }
 
     public String toString() {
-        return String.format("%d", strength);
+
+        return String.format("%s - (%d)\n",this.getClass().getName(),strength);
     }
 
     public boolean canMoveTo(Position destination) {
@@ -40,10 +42,6 @@ public abstract class Unit {
     public void place(Position position) {
         this.position = position;
     }
-
-   /* public Position getPosition() {
-        return position;
-    }*/
 
     public boolean isAlive() {
         return isAlive;
@@ -95,5 +93,13 @@ public abstract class Unit {
         destinationPath.remove(destinationPath.size() - 1);
         destinationPath.remove(0);
         return destinationPath;
+    }
+
+    public Character getCharacter() {
+        return character;
+    }
+
+    public void setChar(Character character) {
+        this.character = character;
     }
 }

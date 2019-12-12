@@ -11,13 +11,11 @@ import java.util.stream.Collectors;
 public class Army {
 
     private List<Unit> units;
-    private List<Unit> deadUnits;
     private String color;
 
     public Army(String color) {
         this.color = color;
         units = new ArrayList<>();
-        deadUnits = new ArrayList<>();
         initializeArmy();
     }
 
@@ -58,7 +56,7 @@ public class Army {
         unit.place(position);
     }
 
-    public boolean isStartingAvailablePositionAvailable(Position position) {
+    public boolean isStartingPosition(Position position) {
         return position.getX() < 10 && position.getY() < 4 && !hasUnitAtPosition(position);
     }
 
@@ -80,6 +78,14 @@ public class Army {
 
     public boolean hasUnitsToPlace() {
         return this.units.stream().anyMatch(unit -> !unit.isPlaced());
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void showDeadUnits() {
+        System.out.println(units.stream().filter(unit -> !unit.isAlive()).collect(Collectors.toList()));
     }
 }
 

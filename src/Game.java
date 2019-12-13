@@ -1,10 +1,8 @@
-import army.Army;
+import army.*;
+import army.unit.*;
 import board.Board;
 import common.Position;
-import player.Computer;
-import player.Human;
-import player.Player;
-import army.unit.Unit;
+import player.*;
 
 import java.util.List;
 import java.util.stream.Collectors;

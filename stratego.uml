@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement />
+  <nodes>
+    <node x="0.0" y="1095.0">army.unit.Scout</node>
+    <node x="231.0" y="1074.0">army.unit.Spy</node>
+    <node x="1002.0" y="1074.0">army.unit.Flag</node>
+    <node x="1310.0" y="1095.0">army.unit.Marshal</node>
+    <node x="876.0" y="1095.0">army.unit.Sergeant</node>
+    <node x="618.0" y="1095.0">army.unit.Lieutenant</node>
+    <node x="385.99999999999994" y="1095.0">army.unit.Major</node>
+    <node x="110.0" y="1095.0">army.unit.Colonel</node>
+    <node x="1155.0" y="1074.0">army.unit.Miner</node>
+    <node x="756.0" y="1095.0">army.unit.General</node>
+    <node x="608.0" y="0.0">army.Army</node>
+    <node x="624.5" y="473.0">army.unit.Unit</node>
+    <node x="496.99999999999994" y="1095.0">army.unit.Captain</node>
+    <node x="1432.0" y="1074.0">army.unit.Bomb</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="army.unit.Marshal" target="army.unit.Unit">
+      <point x="0.0" y="-26.5" />
+      <point x="1361.0" y="1014.0" />
+      <point x="829.25" y="1014.0" />
+      <point x="87.75" y="255.5" />
+    </edge>
+    <edge source="army.unit.Colonel" target="army.unit.Unit">
+      <point x="0.0" y="-26.5" />
+      <point x="160.5" y="1014.0" />
+      <point x="653.75" y="1014.0" />
+      <point x="-87.75" y="255.5" />
+    </edge>
+    <edge source="army.unit.Miner" target="army.unit.Unit">
+      <point x="0.0" y="-47.5" />
+      <point x="1222.5" y="1024.0" />
+      <point x="809.75" y="1024.0" />
+      <point x="68.25" y="255.5" />
+    </edge>
+    <edge source="army.unit.Lieutenant" target="army.unit.Unit">
+      <point x="0.0" y="-26.5" />
+      <point x="677.0" y="1054.0" />
+      <point x="731.75" y="1054.0" />
+      <point x="-9.75" y="255.5" />
+    </edge>
+    <edge source="army.unit.Captain" target="army.unit.Unit">
+      <point x="0.0" y="-26.5" />
+      <point x="547.5" y="1044.0" />
+      <point x="712.25" y="1044.0" />
+      <point x="-29.25" y="255.5" />
+    </edge>
+    <edge source="army.unit.Major" target="army.unit.Unit">
+      <point x="0.0" y="-26.5" />
+      <point x="431.49999999999994" y="1034.0" />
+      <point x="692.75" y="1034.0" />
+      <point x="-48.75" y="255.5" />
+    </edge>
+    <edge source="army.unit.Sergeant" target="army.unit.Unit">
+      <point x="0.0" y="-26.5" />
+      <point x="929.0" y="1044.0" />
+      <point x="770.75" y="1044.0" />
+      <point x="29.25" y="255.5" />
+    </edge>
+    <edge source="army.unit.General" target="army.unit.Unit">
+      <point x="0.0" y="-26.5" />
+      <point x="806.0" y="1054.0" />
+      <point x="751.25" y="1054.0" />
+      <point x="9.75" y="255.5" />
+    </edge>
+    <edge source="army.unit.Flag" target="army.unit.Unit">
+      <point x="0.0" y="-47.5" />
+      <point x="1068.5" y="1034.0" />
+      <point x="790.25" y="1034.0" />
+      <point x="48.75" y="255.5" />
+    </edge>
+    <edge source="army.unit.Bomb" target="army.unit.Unit">
+      <point x="0.0" y="-47.5" />
+      <point x="1498.5" y="1004.0" />
+      <point x="848.75" y="1004.0" />
+      <point x="107.25" y="255.5" />
+    </edge>
+    <edge source="army.unit.Spy" target="army.unit.Unit">
+      <point x="0.0" y="-47.5" />
+      <point x="298.5" y="1024.0" />
+      <point x="673.25" y="1024.0" />
+      <point x="-68.25" y="255.5" />
+    </edge>
+    <edge source="army.unit.Unit" target="army.Army">
+      <point x="0.0" y="-255.5" />
+      <point x="0.0" y="211.5" />
+    </edge>
+    <edge source="army.unit.Scout" target="army.unit.Unit">
+      <point x="0.0" y="-26.5" />
+      <point x="45.0" y="1004.0" />
+      <point x="634.25" y="1004.0" />
+      <point x="-107.25" y="255.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="1.0499819429396893" x="844.7767765013415" y="573.3435371809866" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Fields</Category>
+    <Category>Constructors</Category>
+    <Category>Methods</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

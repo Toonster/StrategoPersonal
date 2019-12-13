@@ -1,7 +1,6 @@
 package player;
 
 import common.Position;
-import army.unit.Unit;
 
 import java.util.List;
 import java.util.Random;

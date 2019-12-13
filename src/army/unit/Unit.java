@@ -1,5 +1,6 @@
 package army.unit;
 
+import army.Army;
 import common.Position;
 
 import java.util.ArrayList;

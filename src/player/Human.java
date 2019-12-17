@@ -1,11 +1,12 @@
 package player;
 
+import army.unit.Unit;
 import common.Position;
 
 import java.util.List;
 import java.util.Scanner;
 
-public class Human extends Player {
+public class Human implements Player {
 
     Scanner input = new Scanner(System.in);
 

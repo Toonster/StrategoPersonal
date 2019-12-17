@@ -5,7 +5,7 @@ import army.unit.Unit;
 
 import java.util.List;
 
-public abstract class Player {
+public interface Player {
 
     public abstract Position selectUnitPosition();
 

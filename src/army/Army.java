@@ -48,15 +48,15 @@ public class Army {
     }
 
     public Unit getUnitAtPosition(Position position){
-        return (Unit) units.stream().filter(unit -> unit.atPosition(position));
+        return units.stream().filter(unit -> unit.atPosition(position)).findFirst().orElse(null);
     }
 
     public void placeUnit(Unit unit, Position position) {
         unit.place(position);
     }
 
-    public boolean isStartingPosition(Position position) {
-        return position.getX() < 10 && position.getY() < 4 && !hasUnitAtPosition(position);
+    public boolean isFreeStartingPosition(Position position) {
+        return position.getX() < 10 && position.getX() >= 0 && position.getY() >= 0 && position.getY() < 4 && !hasUnitAtPosition(position);
     }
 
     public List<Unit> getUnitsToPlace() {
@@ -85,6 +85,10 @@ public class Army {
 
     public void showDeadUnits() {
         System.out.println(units.stream().filter(unit -> !unit.isAlive()).collect(Collectors.toList()));
+    }
+
+    public void clearUnitVisibility() {
+        this.units.forEach(Unit::clearVisibleToEnemy);
     }
 }
 

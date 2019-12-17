@@ -4,6 +4,8 @@ import board.Board;
 import common.Position;
 import player.*;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,9 +27,16 @@ public class Game {
 
     public void start() {
         while (currentArmy.hasUnitsToPlace() || enemyArmy.hasUnitsToPlace()) {
-            placeArmy();
+            setUpArmy();
             swapTurns();
         }
+    }
+
+    public void setUpArmy() {
+        if (!currentPlayer.useStandardArmyConfig()) {
+            loadArmyConfig();
+        }
+        placeArmy();
     }
 
     public void placeArmy() {
@@ -42,7 +51,7 @@ public class Game {
             List<Unit> unitsToPlace = currentArmy.getUnitsToPlace();
             Unit selectedUnit = currentPlayer.selectUnitToPlace(unitsToPlace);
             Position unitDestination = currentPlayer.selectDestination();
-            if (currentArmy.isStartingPosition(unitDestination)) {
+            if (currentArmy.isFreeStartingPosition(unitDestination)) {
                 if (enemyArmy.hasUnitsToPlace()) {
                     unitDestination.add(new Position(0,6));
                 }
@@ -83,8 +92,10 @@ public class Game {
     public void update() {
         board.clear();
         board.update(currentArmy.getUnits());
-        List<Unit> invisibleEnemyUnits = enemyArmy.getUnits().stream().peek(unit -> unit.setChar('X')).collect(Collectors.toList());
-        board.update(invisibleEnemyUnits);
+        List<Unit> enemyUnits = enemyArmy.getUnits();
+        enemyUnits.forEach(unit -> {if (!unit.isVisibleToEnemy()){ unit.setChar('X');}});
+        board.update(enemyUnits);
+        enemyArmy.clearUnitVisibility();
     }
 
     public void swapTurns() {
@@ -96,19 +107,47 @@ public class Game {
         enemyArmy = tempArmy;
     }
 
-    public void save(String fileName) {
+    public void save(String fileName){
         GameState state = new GameState(currentPlayer, enemyPlayer, currentArmy, enemyArmy);
         FileManager.write(state, fileName);
     }
 
     public void load(String fileName) {
-        GameState state = FileManager.read(fileName);
+        GameState state = null;
+        try {
+            state = (GameState) FileManager.read(fileName);
+        } catch (FileNotFoundException e) {
+            System.out.println("Caught FileNotFoundException: " + e.getMessage());
+        } catch (IOException e) {
+            System.out.println("Caught IOException: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Caught Exception: " + e.getMessage());
+        }
+        if (state == null) {
+            System.out.println("Couldn't load gameState");
+            return;
+        }
         loadGameState(state);
+        System.out.println("Gamestate loaded!");
     }
 
-    public Army loadArmyConfig() {
-        GameState state = FileManager.read("ArmyConfig.txt");
-        currentArmy = state.getCurrentArmy();
+    public void loadArmyConfig() {
+        GameState state = null;
+        try {
+            state = (GameState) FileManager.read("ArmyConfig.txt");
+        } catch (FileNotFoundException e) {
+            System.out.println("Caught FileNotFoundException: " + e.getMessage());
+        } catch (IOException e) {
+            System.out.println("Caught IOException: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Caught Exception: " + e.getMessage());
+        }
+        if (state == null) {
+            System.out.println("Couldn't load army configuration");
+            return;
+        }
+        this.currentArmy = state.getCurrentArmy();
+        System.out.println("Army config loaded!");
     }
 
     public void loadGameState(GameState gameState) {

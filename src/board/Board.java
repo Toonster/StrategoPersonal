@@ -29,12 +29,16 @@ public class Board {
     }
 
     public void draw() {
+        System.out.print(" - - - - - - - - - - - - - - - - - - - - - -");
+        System.out.println();
         for (int y = 0; y < HEIGTH; y++) {
             for (int x = 0; x < WIDTH; x++) {
                 System.out.print(" | ");
                 gameField[x][y].draw();
             }
-            System.out.print("|");
+            System.out.print(" |");
+            System.out.println();
+            System.out.print(" - - - - - - - - - - - - - - - - - - - - - -");
             System.out.println();
         }
     }
@@ -49,7 +53,9 @@ public class Board {
 
     public void update(List<Unit> units) {
         for (Unit unit: units){
-            gameField[unit.getX()][unit.getY()].update(unit.getCharacter());
+            if (unit.hasPosition()) {
+                gameField[unit.getX()][unit.getY()].update(unit.getCharacter());
+            }
         }
     }
 

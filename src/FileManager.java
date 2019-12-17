@@ -1,15 +1,15 @@
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import java.io.*;
 import java.nio.channels.ScatteringByteChannel;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class FileManager {
 
-    public static void write(Serializable data, String fileName) throws Exception {
-        try (ObjectOutputStream outputStream = new ObjectOutputStream(Files.newOutputStream(Paths.get(fileName)))){
+    public static void write(Serializable data, String fileName) {
+        try (ObjectOutputStream outputStream = new ObjectOutputStream(Files.newOutputStream(Paths.get(fileName)))) {
             outputStream.writeObject(data);
+        } catch (IOException e) {
+            System.out.println("Caught IOException: " + e.getMessage());
         }
     }
 

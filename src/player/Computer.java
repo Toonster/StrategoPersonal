@@ -1,11 +1,12 @@
 package player;
 
+import army.unit.Unit;
 import common.Position;
 
 import java.util.List;
 import java.util.Random;
 
-public class Computer extends Player {
+public class Computer implements Player {
 
     Random rand = new Random();
 

@@ -1,6 +1,5 @@
 package army.unit;
 
-import army.Army;
 import common.Position;
 
 import java.util.ArrayList;
@@ -11,8 +10,9 @@ public abstract class Unit {
     private int movementSpeed;
     private int strength;
     protected Position position;
-    private boolean isAlive = true;
+    private boolean alive = true;
     private Character character;
+    private boolean visibleToEnemy = false;
 
     public Unit(int movementSpeed, int power, Character character) {
         this.movementSpeed = movementSpeed;
@@ -25,12 +25,11 @@ public abstract class Unit {
     }
 
     public void die() {
-        isAlive = false;
+        alive = false;
         position = null;
     }
 
     public String toString() {
-
         return String.format("%s - (%d)\n",this.getClass().getName(),strength);
     }
 
@@ -45,7 +44,7 @@ public abstract class Unit {
     }
 
     public boolean isAlive() {
-        return isAlive;
+        return alive;
     }
 
     public void battle(Unit enemyUnit) {
@@ -58,6 +57,7 @@ public abstract class Unit {
             enemyUnit.die();
         }
         die();
+        enemyUnit.setVisibleToEnemy();
     }
 
     public int getX() {
@@ -69,11 +69,18 @@ public abstract class Unit {
     }
 
     public boolean isPlaced() {
-        return this.isAlive && this.position != null;
+        return this.alive && this.position != null;
     }
 
     public boolean atPosition(Position position) {
+        if (!hasPosition()) {
+            return false;
+        }
         return this.position.equals(position);
+    }
+
+    public boolean hasPosition() {
+        return this.position != null;
     }
 
     public List<Position> getPathTo(Position destination) {
@@ -102,5 +109,17 @@ public abstract class Unit {
 
     public void setChar(Character character) {
         this.character = character;
+    }
+
+    public void setVisibleToEnemy() {
+        visibleToEnemy = true;
+    }
+
+    public void clearVisibleToEnemy() {
+        visibleToEnemy = false;
+    }
+
+    public boolean isVisibleToEnemy() {
+        return visibleToEnemy;
     }
 }

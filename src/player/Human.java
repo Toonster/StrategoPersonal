@@ -3,10 +3,12 @@ package player;
 import army.unit.Unit;
 import common.Position;
 
+import javax.print.attribute.standard.NumberOfInterveningJobs;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
-public class Human implements Player {
+public class Human extends Player {
 
     Scanner input = new Scanner(System.in);
 
@@ -42,8 +44,15 @@ public class Human implements Player {
         int index = 0;
         while (indexIsInvalid) {
             System.out.print("Enter index: ");
-            index = Integer.parseInt(input.nextLine());
-            if (index < 0 || index >= unitsToPlace.size()) {
+            try {
+                index = Integer.parseInt(input.nextLine());
+                if (index < 0 || index > unitsToPlace.size()) {
+                    throw new IndexOutOfBoundsException();
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Not a number, try again!");
+                continue;
+            } catch (IndexOutOfBoundsException e) {
                 System.out.println("Invalid index, try again");
                 continue;
             }
@@ -54,6 +63,8 @@ public class Human implements Player {
 
     @Override
     public boolean useStandardArmyConfig() {
-        return false;
+        System.out.print("Would you like to use a standard army configuration (y/n)?: ");
+        String answer = input.nextLine();
+        return answer.equalsIgnoreCase("y");
     }
 }

@@ -29,7 +29,7 @@ public class Board {
     }
 
     public void draw() {
-        System.out.print(" - - - - - - - - - - - - - - - - - - - - - -");
+        System.out.print(" - - - - - - - - - - - - - - - - - - - - - ");
         System.out.println();
         for (int y = 0; y < HEIGTH; y++) {
             for (int x = 0; x < WIDTH; x++) {
@@ -38,7 +38,7 @@ public class Board {
             }
             System.out.print(" |");
             System.out.println();
-            System.out.print(" - - - - - - - - - - - - - - - - - - - - - -");
+            System.out.print(" - - - - - - - - - - - - - - - - - - - - - ");
             System.out.println();
         }
     }
@@ -64,6 +64,9 @@ public class Board {
     }
 
     public boolean tilesAreAvailable(List<Position> tilePositions) {
+        if (tilePositions.isEmpty()) {
+            return true;
+        }
         boolean tilesAvailable = true;
         for (Position tilePosition : tilePositions) {
             if (!tileIsAvailable(tilePosition)) {

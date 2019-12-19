@@ -2,10 +2,11 @@ package army.unit;
 
 import common.Position;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Unit {
+public abstract class Unit implements Serializable {
 
     private int movementSpeed;
     private int strength;
@@ -30,7 +31,7 @@ public abstract class Unit {
     }
 
     public String toString() {
-        return String.format("%s - (%d)\n",this.getClass().getName(),strength);
+        return String.format("%s - (%d)\n",this.getClass().getSimpleName(),strength);
     }
 
     public boolean canMoveTo(Position destination) {

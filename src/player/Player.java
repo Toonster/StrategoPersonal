@@ -3,9 +3,10 @@ package player;
 import common.Position;
 import army.unit.Unit;
 
+import java.io.Serializable;
 import java.util.List;
 
-public interface Player {
+public abstract class Player implements Serializable {
 
     public abstract Position selectUnitPosition();
 

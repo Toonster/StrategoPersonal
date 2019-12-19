@@ -3,11 +3,12 @@ package army;
 import army.unit.*;
 import common.Position;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Army {
+public class Army implements Serializable {
 
     private List<Unit> units;
     private String color;
@@ -19,7 +20,40 @@ public class Army {
     }
 
     public void initializeArmy() {
-        addAmountOfUnitsOfType(new Flag(), 1);
+        units.add(new Flag());
+        units.add(new Spy());
+        for (int i = 0; i < 8; i++) {
+            units.add(new Scout());
+        }
+        for (int i = 0; i < 5; i++) {
+            units.add(new Miner());
+        }
+        for (int i = 0; i < 4; i++) {
+            units.add(new Sergeant());
+        }
+        for (int i = 0; i < 4; i++) {
+            units.add(new Lieutenant());
+        }
+        for (int i = 0; i < 4; i++) {
+            units.add(new Captain());
+        }
+        for (int i = 0; i < 3; i++) {
+            units.add(new Major());
+        }
+        for (int i = 0; i < 2; i++) {
+            units.add(new Colonel());
+        }
+        for (int i = 0; i < 1; i++) {
+            units.add(new General());
+        }
+        for (int i = 0; i < 1; i++) {
+            units.add(new Marshal());
+        }
+        for (int i = 0; i < 6; i++) {
+            units.add(new Bomb());
+        }
+
+        /*addAmountOfUnitsOfType(new Flag(), 1);
         addAmountOfUnitsOfType(new Spy(), 1);
         addAmountOfUnitsOfType(new Scout(), 8);
         addAmountOfUnitsOfType(new Miner(), 5);
@@ -30,14 +64,14 @@ public class Army {
         addAmountOfUnitsOfType(new Colonel(), 2);
         addAmountOfUnitsOfType(new General(), 1);
         addAmountOfUnitsOfType(new Marshal(), 1);
-        addAmountOfUnitsOfType(new Bomb(), 6);
+        addAmountOfUnitsOfType(new Bomb(), 6);*/
     }
 
-    public void addAmountOfUnitsOfType(Unit unit, int amount) {
+    /*public void addAmountOfUnitsOfType(Unit unit, int amount) {
         for (int i = 0; i < amount; i++) {
-            units.add(unit);
+            units.add(unit());
         }
-    }
+    }*/
 
     public int calculateTotalStrength() {
         int totalStrength = 0;
@@ -55,8 +89,14 @@ public class Army {
         unit.place(position);
     }
 
-    public boolean isFreeStartingPosition(Position position) {
-        return position.getX() < 10 && position.getX() >= 0 && position.getY() >= 0 && position.getY() < 4 && !hasUnitAtPosition(position);
+    public boolean isAvailableStartingPosition(Position position) {
+        if (this.color.equalsIgnoreCase("Red")) {
+            return position.getX() < 10 && position.getX() >= 0 && position.getY() >= 0 && position.getY() < 4 && !hasUnitAtPosition(position);
+        }
+        if (this.color.equalsIgnoreCase("Blue")) {
+            return position.getX() < 10 && position.getX() >= 0 && position.getY() >= 6 && position.getY() < 10 && !hasUnitAtPosition(position);
+        }
+        return false;
     }
 
     public List<Unit> getUnitsToPlace() {
@@ -89,6 +129,15 @@ public class Army {
 
     public void clearUnitVisibility() {
         this.units.forEach(Unit::clearVisibleToEnemy);
+    }
+
+    public void giveStandardPosToUnits() {
+        int index = 0;
+        for (int y = 6; y < 10; y++) {
+            for (int x = 0; x < 10; x++) {
+                units.get(index++).place(new Position(x,y));
+            }
+        }
     }
 }
 

@@ -8,6 +8,6 @@ public class Flag extends Unit {
 
     @Override
     public String toString() {
-        return String.format("%s - (%d)\n",this.getClass().getName(),0);
+        return String.format("%s - (%d)\n",this.getClass().getSimpleName(),0);
     }
 }

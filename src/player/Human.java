@@ -14,29 +14,34 @@ public class Human extends Player {
 
     @Override
     public Position selectUnitPosition() {
-
-        System.out.println("Enter position of the unit you want to move (x,y): ");
-        String position = input.nextLine();
-        int x = Integer.parseInt(position.substring(0, position.indexOf(',')));
-        int y = Integer.parseInt(position.substring(position.indexOf(',')+1));
-        return new Position(x, y);
-
+        return selectPosition("Enter position of the unit you want to move (x,y): ");
     }
 
     @Override
     public Position selectDestination() {
+        return selectPosition("Enter unit destination (x,y): ");
+    }
 
-        System.out.println("Enter unit destination (x,y): ");
-        String destination = input.nextLine();
-        int x = Integer.parseInt(destination.substring(0, destination.indexOf(',')));
-        int y = Integer.parseInt(destination.substring(destination.indexOf(',')+1));
+    private Position selectPosition(String s) {
+        boolean isRunning = true;
+        int x = 0;
+        int y = 0;
+        do {
+            System.out.println(s);
+            String position = input.nextLine();
+            try {
+                x = Integer.parseInt(position.substring(0, position.indexOf(',')));
+                y = Integer.parseInt(position.substring(position.indexOf(',') + 1));
+                isRunning = false;
+            } catch (StringIndexOutOfBoundsException | NumberFormatException e) {
+                System.out.println("Invalid input format, try again!");
+            }
+        } while (isRunning);
         return new Position(x, y);
-
     }
 
     @Override
     public Unit selectUnitToPlace(List<Unit> unitsToPlace) {
-
         System.out.println("Choose a unit to place!");
         System.out.println("Index. - Name - (Strength)");
         for (int i = 0; i < unitsToPlace.size(); i++) System.out.printf("%d. - %s", i, unitsToPlace.get(i).toString());

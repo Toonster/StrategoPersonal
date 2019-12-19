@@ -20,7 +20,9 @@ public class Board {
         for (int y = 0; y < HEIGTH; y++) {
             for (int x = 0; x < WIDTH; x++) {
                 if ((y == 4 || y == 5) && (x == 2 || x == 3 || x == 6 || x == 7)) {
-                    gameField[x][y] = new Tile(new Water());
+                    Tile waterTile = new Tile(new Water());
+                    waterTile.update(waterTile.getSurfaceCharacter());
+                    gameField[x][y] = waterTile;
                     continue;
                 }
                 gameField[x][y] = new Tile(new Grass());
@@ -43,19 +45,19 @@ public class Board {
         }
     }
 
-    public void clear() {
+    public void clearUnits() {
         for (int y = 0; y < HEIGTH; y++) {
             for (int x = 0; x < WIDTH; x++) {
-                gameField[x][y].clear();
+                if (!((y == 4 || y == 5) && (x == 2 || x == 3 || x == 6 || x == 7))) {
+                    gameField[x][y].clear();
+                }
             }
         }
     }
 
-    public void update(List<Unit> units) {
+    public void updateUnits(List<Unit> units) {
         for (Unit unit: units){
-            if (unit.hasPosition()) {
                 gameField[unit.getX()][unit.getY()].update(unit.getCharacter());
-            }
         }
     }
 

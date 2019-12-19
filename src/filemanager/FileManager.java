@@ -33,11 +33,11 @@ public class FileManager {
         }
     }
 
-        public static Object read (String fileName) throws Exception {
-                ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(fileName));
-                Object o = inputStream.readObject();
-                inputStream.close();
-                return o;
-        }
+    public static Object read(String fileName) throws Exception {
+        ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(fileName));
+        Object o = inputStream.readObject();
+        inputStream.close();
+        return o;
+    }
 
 }

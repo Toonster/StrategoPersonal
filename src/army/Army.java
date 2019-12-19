@@ -103,6 +103,10 @@ public class Army implements Serializable {
       return this.units.stream().filter(unit -> !unit.isPlaced()).collect(Collectors.toList());
     }
 
+    public List<Unit> getPlacedUnits() {
+        return this.units.stream().filter(Unit::isPlaced).collect(Collectors.toList());
+    }
+
     public boolean isDefeated() {
         return units.stream().filter(unit -> unit instanceof Flag).noneMatch(Unit::isAlive);
     }

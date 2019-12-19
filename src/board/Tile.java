@@ -2,7 +2,7 @@ package board;
 
 public class Tile {
 
-    private char character = ' ';
+    private char character;
     private Surface surface;
 
     public Tile(Surface surface) {
@@ -27,5 +27,9 @@ public class Tile {
 
     public boolean isAccessible() {
         return this.surface.isAccessible();
+    }
+
+    public char getSurfaceCharacter() {
+        return this.surface.getCharacter();
     }
 }

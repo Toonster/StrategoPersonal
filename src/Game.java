@@ -82,9 +82,7 @@ public class Game {
         while (!currentArmy.isDefeated() && !enemyArmy.isDefeated()) {
             processTurn();
             update();
-            enemyArmy.showDeadUnits();
-            board.draw();
-            currentArmy.showDeadUnits();
+            draw();
             swapTurns();
         }
     }
@@ -122,6 +120,12 @@ public class Game {
         enemyArmy.clearUnitVisibility();
     }
 
+    public void draw() {
+        System.out.println(enemyArmy.getDeadUnits());
+        board.draw();
+        System.out.println(currentArmy.getDeadUnits());
+    }
+
     public void swapTurns() {
         Player tempPlayer = currentPlayer;
         Army tempArmy = currentArmy;
@@ -136,14 +140,14 @@ public class Game {
         FileManager.write(state, fileName);
     }
 
-    public void load(String fileName) {
-        GameData data = loadDataFromFile(fileName, "Couldn't load game!");
+    public void load(String fileName) throws StrategoException {
+        GameData data = loadDataFromFile(fileName);
         setGame(data);
         System.out.println("Game loaded!");
     }
 
-    public void loadArmyConfig() {
-        GameData data = loadDataFromFile("ArmyConfig.txt", "Couldn't load army configuration!");
+    public void loadArmyConfig() throws StrategoException {
+        GameData data = loadDataFromFile("ArmyConfig.txt");
         this.currentArmy = data.getCurrentArmy();
         System.out.println("Army config loaded!");
     }
@@ -155,20 +159,19 @@ public class Game {
         enemyArmy = gameData.getEnemyArmy();
     }
 
-    public GameData loadDataFromFile(String fileName, String errorMessage){
+    public GameData loadDataFromFile(String fileName) throws StrategoException {
         GameData state = null;
         try {
             state = (filemanager.GameData) filemanager.FileManager.read(fileName);
         } catch (FileNotFoundException e) {
-            System.out.println("Caught FileNotFoundException: " + e.getMessage());
+            throw new StrategoException("Caught FileNotFoundException");
         } catch (IOException e) {
-            System.out.println("Caught IOException: " + e.getMessage());
+            throw new StrategoException("Caught IOException");
         } catch (Exception e) {
-            System.out.println("Caught Exception: " + e.getMessage());
+            throw new StrategoException("Caught Exception");
         }
         if (state == null) {
-            System.out.println(errorMessage);
-            return null;
+            throw new StrategoException("Data is null");
         }
         return state;
     }

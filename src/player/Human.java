@@ -22,12 +22,12 @@ public class Human extends Player {
         return selectPosition("Enter unit destination (x,y): ");
     }
 
-    private Position selectPosition(String s) {
+    private Position selectPosition(String message) {
         boolean isRunning = true;
         int x = 0;
         int y = 0;
-        do {
-            System.out.println(s);
+        while (isRunning) {
+            System.out.println(message);
             String position = input.nextLine();
             try {
                 x = Integer.parseInt(position.substring(0, position.indexOf(',')));
@@ -36,7 +36,7 @@ public class Human extends Player {
             } catch (StringIndexOutOfBoundsException | NumberFormatException e) {
                 System.out.println("Invalid input format, try again!");
             }
-        } while (isRunning);
+        }
         return new Position(x, y);
     }
 
@@ -54,14 +54,12 @@ public class Human extends Player {
                 if (index < 0 || index > unitsToPlace.size()) {
                     throw new IndexOutOfBoundsException();
                 }
+                indexIsInvalid = false;
             } catch (NumberFormatException e) {
                 System.out.println("Not a number, try again!");
-                continue;
             } catch (IndexOutOfBoundsException e) {
                 System.out.println("Invalid index, try again");
-                continue;
             }
-            indexIsInvalid = false;
         }
         return unitsToPlace.get(index);
     }

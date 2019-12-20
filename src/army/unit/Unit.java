@@ -14,6 +14,37 @@ public abstract class Unit implements Serializable {
     private boolean alive = true;
     private Character character;
     private boolean visibleToEnemy = false;
+    private Rank rank;
+
+    public enum Rank {
+        Bomb(0,11,'B');
+        private int movementSpeed;
+        private int strength;
+        private Character character;
+
+        Rank(int movementSpeed, int strength, Character character) {
+            this.movementSpeed = movementSpeed;
+            this.strength = strength;
+            this.character = character;
+        }
+    }
+
+    public void battle2(Unit enemyUnit) {
+        switch (this.rank) {
+            case Bomb:
+            if (rank.strength > enemyUnit.strength) {
+                this.position = enemyUnit.position;
+                enemyUnit.die();
+                return;
+            }
+            if (strength == enemyUnit.strength) {
+                enemyUnit.die();
+            }
+            die();
+            enemyUnit.setVisibleToEnemy();
+        }
+    }
+
 
     public Unit(int movementSpeed, int power, Character character) {
         this.movementSpeed = movementSpeed;

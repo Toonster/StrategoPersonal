@@ -3,6 +3,7 @@ package army;
 import army.unit.*;
 import common.Position;
 
+import java.awt.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,10 +12,15 @@ import java.util.stream.Collectors;
 public class Army implements Serializable {
 
     private List<Unit> units;
-    private String color;
+    private List<Position> startingPosition;
+    private Color color;
+
+    public enum Color {
+        BLUE, RED
+    }
 
     public Army(String color) {
-        this.color = color;
+        this.color = Color.valueOf(color.toUpperCase());
         units = new ArrayList<>();
         initializeArmy();
     }
@@ -90,10 +96,10 @@ public class Army implements Serializable {
     }
 
     public boolean isAvailableStartingPosition(Position position) {
-        if (this.color.equalsIgnoreCase("Red")) {
+        if (this.color.equals(Color.RED)) {
             return position.getX() < 10 && position.getX() >= 0 && position.getY() >= 0 && position.getY() < 4 && !hasUnitAtPosition(position);
         }
-        if (this.color.equalsIgnoreCase("Blue")) {
+        if (this.color.equals(Color.BLUE)) {
             return position.getX() < 10 && position.getX() >= 0 && position.getY() >= 6 && position.getY() < 10 && !hasUnitAtPosition(position);
         }
         return false;
@@ -124,11 +130,11 @@ public class Army implements Serializable {
     }
 
     public String getColor() {
-        return color;
+        return this.color.name();
     }
 
-    public void showDeadUnits() {
-        System.out.println(units.stream().filter(unit -> !unit.isAlive()).collect(Collectors.toList()));
+    public List<Unit> getDeadUnits() {
+        return units.stream().filter(unit -> !unit.isAlive()).collect(Collectors.toList());
     }
 
     public void clearUnitVisibility() {

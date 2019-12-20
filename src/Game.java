@@ -8,6 +8,7 @@ import player.*;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 public class Game {
@@ -26,33 +27,38 @@ public class Game {
         enemyArmy = new Army("Red");
     }
 
-    public void start() {
+/*    public void start() {
         board.draw();
         while (currentArmy.hasUnitsToPlace() || enemyArmy.hasUnitsToPlace()) {
             setUpArmy();
             swapTurns();
         }
-    }
-
-/*    public void start() {
-        currentArmy.giveStandardPosToUnits();
-        swapTurns();
-        while (currentArmy.hasUnitsToPlace()) {
-            placeUnit();
-            update();
-        }
-        board.draw();
     }*/
 
-    public void setUpArmy() {
+    public void start() {
+        currentArmy.giveStandardPosToUnits();
+        update();
+        draw();
+        swapTurns();
+        /*while (currentArmy.hasUnitsToPlace()) {
+            placeUnit();
+            update();
+        }*/
+        setRandomPositions();
+        update();
+        board.draw();
+        swapTurns();
+    }
+
+ /*   public void setUpArmy() {
         if (currentPlayer.useStandardArmyConfig()) {
             loadArmyConfig();
             return;
         }
         placeArmy();
-    }
+    }*/
 
-    public void placeArmy() {
+   /* public void placeArmy() {
         while (currentArmy.hasUnitsToPlace()) {
             placeUnit();
             update();
@@ -60,8 +66,8 @@ public class Game {
                 board.draw();
             }
         }
-    }
-
+    }*/
+/*
     public void placeUnit() {
         List<Unit> unitsToPlace = currentArmy.getUnitsToPlace();
         Unit selectedUnit = currentPlayer.selectUnitToPlace(unitsToPlace);
@@ -76,7 +82,7 @@ public class Game {
         if (currentPlayer instanceof Human) {
             System.out.println("Invalid destination, retry!");
         }
-    }
+    }*/
 
     public void play() {
         while (!currentArmy.isDefeated() && !enemyArmy.isDefeated()) {
@@ -174,6 +180,22 @@ public class Game {
             throw new StrategoException("Data is null");
         }
         return state;
+    }
+
+    public void setRandomPositions() {
+        List<Unit> unitsToPlace = currentArmy.getUnitsToPlace();
+        System.out.println(unitsToPlace.size());
+        Collections.shuffle(unitsToPlace);
+        System.out.println(unitsToPlace.size());
+        int index = 0;
+        for (int y = 0; y < 4; y++) {
+            for (int x = 0; x < 10; x++) {
+                Unit unit = unitsToPlace.get(index++);
+                    unit.place(new Position(x,y));
+                    System.out.println(unit.getCharacter());
+                    System.out.println(x + "," + y );
+            }
+        }
     }
 }
 

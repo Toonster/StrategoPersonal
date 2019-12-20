@@ -59,7 +59,7 @@ public class Army implements Serializable {
             units.add(new Bomb());
         }
 
-        /*addAmountOfUnitsOfType(new Flag(), 1);
+/*ddAmountOfUnitsOfType(new Flag(), 1);
         addAmountOfUnitsOfType(new Spy(), 1);
         addAmountOfUnitsOfType(new Scout(), 8);
         addAmountOfUnitsOfType(new Miner(), 5);
@@ -70,14 +70,16 @@ public class Army implements Serializable {
         addAmountOfUnitsOfType(new Colonel(), 2);
         addAmountOfUnitsOfType(new General(), 1);
         addAmountOfUnitsOfType(new Marshal(), 1);
-        addAmountOfUnitsOfType(new Bomb(), 6);*/
+        addAmountOfUnitsOfType(new Bomb(), 6);
+
     }
 
-    /*public void addAmountOfUnitsOfType(Unit unit, int amount) {
+    public void addAmountOfUnitsOfType(Unit unit, int amount) {
         for (int i = 0; i < amount; i++) {
-            units.add(unit());
+            units.add(unit);
         }
     }*/
+    }
 
     public int calculateTotalStrength() {
         int totalStrength = 0;

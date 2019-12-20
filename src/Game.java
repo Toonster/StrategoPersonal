@@ -40,14 +40,11 @@ public class Game {
         update();
         draw();
         swapTurns();
-        /*while (currentArmy.hasUnitsToPlace()) {
+        while (currentArmy.hasUnitsToPlace()) {
             placeUnit();
             update();
-        }*/
-        setRandomPositions();
-        update();
-        board.draw();
-        swapTurns();
+        }
+        draw();
     }
 
  /*   public void setUpArmy() {
@@ -67,7 +64,6 @@ public class Game {
             }
         }
     }*/
-/*
     public void placeUnit() {
         List<Unit> unitsToPlace = currentArmy.getUnitsToPlace();
         Unit selectedUnit = currentPlayer.selectUnitToPlace(unitsToPlace);
@@ -82,7 +78,7 @@ public class Game {
         if (currentPlayer instanceof Human) {
             System.out.println("Invalid destination, retry!");
         }
-    }*/
+    }
 
     public void play() {
         while (!currentArmy.isDefeated() && !enemyArmy.isDefeated()) {

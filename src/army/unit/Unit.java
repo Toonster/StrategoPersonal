@@ -17,7 +17,10 @@ public abstract class Unit implements Serializable {
     private Rank rank;
 
     public enum Rank {
-        Bomb(0,11,'B');
+        Bomb(0,11,'B'), Captain(1,6, '5'), Colonel (1,8,'3'),
+        Flag(0,0, 'F'), General(1,9, '2'), Lieutenant(1, 5, '6'),
+        Major(1,7, '4'), Marshal(1,10, '1'), Miner(1,3, '8'),
+        Scout(9, 2, '9'), Sergeant(1,4, '7'), Spy(1, 1, 'S');
         private int movementSpeed;
         private int strength;
         private Character character;
@@ -29,16 +32,27 @@ public abstract class Unit implements Serializable {
         }
     }
 
-    public void battle2(Unit enemyUnit) {
+    public void battle(Unit enemyUnit) {
         switch (this.rank) {
-            case Bomb:
-            if (rank.strength > enemyUnit.strength) {
+            case Spy:
+                if (enemyUnit.rank == Rank.Marshal) {
+                    enemyUnit.die();
+                }
+                break;
+            case Miner:
+                if (enemyUnit.rank == Rank.Bomb) {
+                    enemyUnit.die();
+                }
+            default:
+            if (rank.strength > enemyUnit.rank.strength) {
                 this.position = enemyUnit.position;
                 enemyUnit.die();
                 return;
             }
             if (strength == enemyUnit.strength) {
                 enemyUnit.die();
+                this.die();
+                return;
             }
             die();
             enemyUnit.setVisibleToEnemy();
@@ -77,19 +91,6 @@ public abstract class Unit implements Serializable {
 
     public boolean isAlive() {
         return alive;
-    }
-
-    public void battle(Unit enemyUnit) {
-        if (strength > enemyUnit.strength) {
-            this.position = enemyUnit.position;
-            enemyUnit.die();
-            return;
-        }
-        if (strength == enemyUnit.strength) {
-            enemyUnit.die();
-        }
-        die();
-        enemyUnit.setVisibleToEnemy();
     }
 
     public int getX() {

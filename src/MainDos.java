@@ -1,34 +1,33 @@
-import army.*;
-import army.unit.*;
+import army.Army;
+import army.ArmyColor;
+import army.unit.Unit;
 import board.Board;
 import board.Tile;
 import common.Position;
 import filemanager.FileManager;
 import filemanager.GameData;
-import player.*;
+import player.Computer;
+import player.Human;
+import player.Player;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 
-public class Game {
-
-    private Player currentPlayer;
-    private Player enemyPlayer;
-    private Army currentArmy;
-    private Army enemyArmy;
-    private Board board;
-
-    public Game() {
-        board = new Board();
-        currentPlayer = new Human();
-        enemyPlayer = new Computer();
-        currentArmy = new Army("Blue");
-        enemyArmy = new Army("Red");
+public class MainDos {
+    public static void main(String[] args) {
+        showUnitsToPlace();
+        showMessage();
     }
 
+    static Player currentPlayer = new Human();
+    static Player enemyPlayer = new Computer();
+    static Army currentArmy = new Army(ArmyColor.BLUE);
+    static Army enemyArmy = new Army(ArmyColor.RED);
+    static Board board = new Board();
+
 /*    public void start() {
+        showMessage("The game has started!");
         board.draw();
         while (currentArmy.hasUnitsToPlace() || enemyArmy.hasUnitsToPlace()) {
             setUpArmy();
@@ -36,10 +35,22 @@ public class Game {
         }
     }*/
 
-    public void start() {
-        currentArmy.giveStandardPosToUnits();
+    public static void showMessage(String message) {
+        System.out.println(message);
+    }
+
+    public static void showUnitsToPlace() {
+        showMessage("Index. - Name - (Strength)");
+        List<Unit> unitsToPlace = currentArmy.getUnitsToPlace();
+        for (int i = 0; i < unitsToPlace.size(); i++){
+            System.out.printf("%d. - %s", i, unitsToPlace.get(i).toString());
+        }
+    }
+
+    public static void start(Army army) {
+        army.giveStandardPosToUnits();
         update();
-        draw();
+        drawBoard();
         swapTurns();
         while (currentArmy.hasUnitsToPlace()) {
             placeUnit();
@@ -56,24 +67,41 @@ public class Game {
         placeArmy();
     }*/
 
-   /* public void placeArmy() {
-        while (currentArmy.hasUnitsToPlace()) {
-            placeUnit();
-            update();
-            if (currentPlayer instanceof Human) {
-                board.draw();
-            }
-        }
-    }*/
-    public void placeUnit(int index, int x, int y) {
+    /* public void placeArmy() {
+         while (currentArmy.hasUnitsToPlace()) {
+             placeUnit();
+             update();
+             if (currentPlayer instanceof Human) {
+                 board.draw();
+             }
+         }
+     }*/
+    public void placeUnit(String unitIndex, String destination) {
         List<Unit> unitsToPlace = currentArmy.getUnitsToPlace();
-        Unit selectedUnit = unitsToPlace.get(index);
-        Position unitDestination = new Position(x,y);
+        Unit selectedUnit = currentPlayer.selectUnitToPlace(unitsToPlace, unitIndex);
+        Position unitDestination = currentPlayer.selectDestination();
         if (enemyArmy.hasUnitsToPlace()) {
             unitDestination.add(new Position(0, 6));
         }
         if (currentArmy.isAvailableStartingPosition(unitDestination)) {
             currentArmy.placeUnit(selectedUnit, unitDestination);
+            return;
+        }
+    }
+
+    public static void drawBoard() {
+        Tile[][] gameField = board.getGameField();
+        System.out.print(" - - - - - - - - - - - - - - - - - - - - - ");
+        System.out.println();
+        for (int y = 0; y < 10; y++) {
+            for (int x = 0; x < 10; x++) {
+                System.out.print(" | ");
+                System.out.print(gameField[x][y]);
+            }
+            System.out.print(" |");
+            System.out.println();
+            System.out.print(" - - - - - - - - - - - - - - - - - - - - - ");
+            System.out.println();
         }
     }
 
@@ -101,7 +129,7 @@ public class Game {
         }
     }
 
-    public void update() {
+    public static void update() {
         board.clearUnits();
         board.updateUnits(currentArmy.getPlacedUnits());
         List<Unit> enemyUnits = enemyArmy.getPlacedUnits();
@@ -146,7 +174,7 @@ public class Game {
     }
 
     public GameData loadDataFromFile(String fileName) throws StrategoException {
-        GameData state;
+        GameData state = null;
         try {
             state = (filemanager.GameData) filemanager.FileManager.read(fileName);
         } catch (FileNotFoundException e) {
@@ -161,18 +189,4 @@ public class Game {
         }
         return state;
     }
-
-    public Board getBoard() {
-        return board;
-    }
-
-    public Army getCurrentArmy() {
-        return currentArmy;
-    }
-
-    public boolean armyHasUnitsToPlace() {
-        return currentArmy.hasUnitsToPlace();
-    }
 }
-
-

@@ -12,7 +12,7 @@ public abstract class Player implements Serializable {
 
     public abstract Position selectDestination();
 
-    public abstract Unit selectUnitToPlace(List<Unit> unitsToPlace);
+    public abstract Unit selectUnitToPlace(List<Unit> unitsToPlace, String input);
 
     public abstract boolean useStandardArmyConfig();
 }

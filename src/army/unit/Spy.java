@@ -3,7 +3,7 @@ package army.unit;
 public class Spy extends Unit {
 
     public Spy() {
-        super(1, 1, 'S');
+        super(1, 1, 'S', Rank.Spy);
     }
 
     @Override

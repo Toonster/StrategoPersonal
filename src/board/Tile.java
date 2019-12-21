@@ -9,10 +9,6 @@ public class Tile {
         this.surface = surface;
     }
 
-    public void draw() {
-        System.out.print(character);
-    }
-
     public void update(char character) {
         this.character = character;
     }
@@ -31,5 +27,10 @@ public class Tile {
 
     public char getSurfaceCharacter() {
         return this.surface.getCharacter();
+    }
+
+    @Override
+    public String toString() {
+        return Character.toString(character);
     }
 }

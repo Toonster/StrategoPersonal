@@ -8,20 +8,6 @@ import java.util.Arrays;
 
 public class FileManager {
 
-    public static File createFile(String fileName) {
-        File file = new File(fileName);
-        try {
-            if (file.createNewFile()) {
-                System.out.println("File created");
-            } else {
-                System.out.println("File already exists");
-            }
-        } catch (IOException e) {
-            System.out.println(Arrays.toString(e.getStackTrace()));
-        }
-        return file;
-    }
-
     public static void write(Serializable data, String fileName) {
         try {
             ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(fileName));

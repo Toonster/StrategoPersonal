@@ -22,35 +22,31 @@ public class Human extends Player {
         return selectPosition("Enter unit destination (x,y): ");
     }
 
-    private Position selectPosition(String message) {
+    private Position selectPosition(String answer) {
         boolean isRunning = true;
         int x = 0;
         int y = 0;
         while (isRunning) {
-            System.out.println(message);
-            String position = input.nextLine();
             try {
-                x = Integer.parseInt(position.substring(0, position.indexOf(',')));
-                y = Integer.parseInt(position.substring(position.indexOf(',') + 1));
+                x = Integer.parseInt(answer.substring(0, answer.indexOf(',')));
+                y = Integer.parseInt(answer.substring(answer.indexOf(',') + 1));
                 isRunning = false;
-            } catch (StringIndexOutOfBoundsException | NumberFormatException e) {
-                System.out.println("Invalid input format, try again!");
+            } catch (StringIndexOutOfBoundsException e) {
+                throw new StringIndexOutOfBoundsException("Index is out of bounds!");
+            } catch (NumberFormatException e) {
+                throw new NumberFormatException("Invalid input format!");
             }
         }
         return new Position(x, y);
     }
 
     @Override
-    public Unit selectUnitToPlace(List<Unit> unitsToPlace) {
-        System.out.println("Choose a unit to place!");
-        System.out.println("Index. - Name - (Strength)");
-        for (int i = 0; i < unitsToPlace.size(); i++) System.out.printf("%d. - %s", i, unitsToPlace.get(i).toString());
+    public Unit selectUnitToPlace(List<Unit> unitsToPlace, String input) {
         boolean indexIsInvalid = true;
         int index = 0;
         while (indexIsInvalid) {
-            System.out.print("Enter index: ");
             try {
-                index = Integer.parseInt(input.nextLine());
+                index = Integer.parseInt(input);
                 if (index < 0 || index > unitsToPlace.size()) {
                     throw new IndexOutOfBoundsException();
                 }

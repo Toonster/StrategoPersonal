@@ -8,66 +8,45 @@ import java.util.List;
 
 public abstract class Unit implements Serializable {
 
-    private int movementSpeed;
-    private int strength;
     protected Position position;
     private boolean alive = true;
-    private Character character;
     private boolean visibleToEnemy = false;
+    private int strength;
+    private int movementSpeed;
+    private char character;
     private Rank rank;
 
     public enum Rank {
-        Bomb(0,11,'B'), Captain(1,6, '5'), Colonel (1,8,'3'),
-        Flag(0,0, 'F'), General(1,9, '2'), Lieutenant(1, 5, '6'),
-        Major(1,7, '4'), Marshal(1,10, '1'), Miner(1,3, '8'),
-        Scout(9, 2, '9'), Sergeant(1,4, '7'), Spy(1, 1, 'S');
-        private int movementSpeed;
-        private int strength;
-        private Character character;
+        Bomb, Captain, Colonel,
+        Flag, General, Luitenant,
+        Major, Marshal, Miner,
+        Scout, Sergeant, Spy;
+    }
 
-        Rank(int movementSpeed, int strength, Character character) {
-            this.movementSpeed = movementSpeed;
-            this.strength = strength;
-            this.character = character;
-        }
+    public Unit(int strength, int movementSpeed, char character, Rank rank) {
+        this.strength = strength;
+        this.movementSpeed = movementSpeed;
+        this.character = character;
+        this.rank = rank;
     }
 
     public void battle(Unit enemyUnit) {
-        switch (this.rank) {
-            case Spy:
-                if (enemyUnit.rank == Rank.Marshal) {
-                    enemyUnit.die();
-                }
-                break;
-            case Miner:
-                if (enemyUnit.rank == Rank.Bomb) {
-                    enemyUnit.die();
-                }
-            default:
-            if (rank.strength > enemyUnit.rank.strength) {
-                this.position = enemyUnit.position;
-                enemyUnit.die();
-                return;
-            }
-            if (strength == enemyUnit.strength) {
-                enemyUnit.die();
-                this.die();
-                return;
-            }
-            die();
-            enemyUnit.setVisibleToEnemy();
+        if ( this.strength > enemyUnit.strength) {
+            this.position = enemyUnit.position;
+            enemyUnit.die();
+            return;
         }
-    }
-
-
-    public Unit(int movementSpeed, int power, Character character) {
-        this.movementSpeed = movementSpeed;
-        this.strength = power;
-        this.character = character;
+        if (this.strength == enemyUnit.strength) {
+            enemyUnit.die();
+            die();
+            return;
+        }
+        die();
+        enemyUnit.setVisibleToEnemy();
     }
 
     public int getStrength() {
-        return strength;
+        return this.strength;
     }
 
     public void die() {
@@ -76,7 +55,7 @@ public abstract class Unit implements Serializable {
     }
 
     public String toString() {
-        return String.format("%s - (%d)\n",this.getClass().getSimpleName(),strength);
+        return String.format("%s - (%d)\n",this.getClass().getSimpleName(),this.strength);
     }
 
     public boolean canMoveTo(Position destination) {
@@ -106,10 +85,7 @@ public abstract class Unit implements Serializable {
     }
 
     public boolean atPosition(Position position) {
-        if (!hasPosition()) {
-            return false;
-        }
-        return this.position.equals(position);
+        return hasPosition() && this.position.equals(position);
     }
 
     public boolean hasPosition() {
@@ -137,11 +113,11 @@ public abstract class Unit implements Serializable {
     }
 
     public Character getCharacter() {
-        return character;
+        return this.character;
     }
 
     public void setChar(Character character) {
-        this.character = character;
+        this.setChar(character);
     }
 
     public void setVisibleToEnemy() {

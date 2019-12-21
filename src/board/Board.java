@@ -30,21 +30,6 @@ public class Board {
         }
     }
 
-    public void draw() {
-        System.out.print(" - - - - - - - - - - - - - - - - - - - - - ");
-        System.out.println();
-        for (int y = 0; y < HEIGTH; y++) {
-            for (int x = 0; x < WIDTH; x++) {
-                System.out.print(" | ");
-                gameField[x][y].draw();
-            }
-            System.out.print(" |");
-            System.out.println();
-            System.out.print(" - - - - - - - - - - - - - - - - - - - - - ");
-            System.out.println();
-        }
-    }
-
     public void clearUnits() {
         for (int y = 0; y < HEIGTH; y++) {
             for (int x = 0; x < WIDTH; x++) {
@@ -80,5 +65,9 @@ public class Board {
 
     public boolean tileIsAvailable(Position tilePosition) {
         return this.gameField[tilePosition.getX()][tilePosition.getY()].isAccessible() && this.gameField[tilePosition.getX()][tilePosition.getY()].isFree();
+    }
+
+    public Tile[][] getGameField() {
+        return gameField;
     }
 }

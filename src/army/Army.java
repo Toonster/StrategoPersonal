@@ -13,14 +13,10 @@ public class Army implements Serializable {
 
     private List<Unit> units;
     private List<Position> startingPosition;
-    private Color color;
+    private ArmyColor color;
 
-    public enum Color {
-        BLUE, RED
-    }
-
-    public Army(String color) {
-        this.color = Color.valueOf(color.toUpperCase());
+    public Army(ArmyColor color) {
+        this.color = color;
         units = new ArrayList<>();
         initializeArmy();
     }
@@ -58,27 +54,6 @@ public class Army implements Serializable {
         for (int i = 0; i < 6; i++) {
             units.add(new Bomb());
         }
-
-/*ddAmountOfUnitsOfType(new Flag(), 1);
-        addAmountOfUnitsOfType(new Spy(), 1);
-        addAmountOfUnitsOfType(new Scout(), 8);
-        addAmountOfUnitsOfType(new Miner(), 5);
-        addAmountOfUnitsOfType(new Sergeant(), 4);
-        addAmountOfUnitsOfType(new Lieutenant(), 4);
-        addAmountOfUnitsOfType(new Captain(), 4);
-        addAmountOfUnitsOfType(new Major(), 3);
-        addAmountOfUnitsOfType(new Colonel(), 2);
-        addAmountOfUnitsOfType(new General(), 1);
-        addAmountOfUnitsOfType(new Marshal(), 1);
-        addAmountOfUnitsOfType(new Bomb(), 6);
-
-    }
-
-    public void addAmountOfUnitsOfType(Unit unit, int amount) {
-        for (int i = 0; i < amount; i++) {
-            units.add(unit);
-        }
-    }*/
     }
 
     public int calculateTotalStrength() {
@@ -98,11 +73,14 @@ public class Army implements Serializable {
     }
 
     public boolean isAvailableStartingPosition(Position position) {
+        if (!hasUnitAtPosition(position)) {
+            return false;
+        }
         if (this.color.equals(Color.RED)) {
-            return position.getX() < 10 && position.getX() >= 0 && position.getY() >= 0 && position.getY() < 4 && !hasUnitAtPosition(position);
+            return position.getX() < 10 && position.getX() >= 0 && position.getY() >= 0 && position.getY() < 4;
         }
         if (this.color.equals(Color.BLUE)) {
-            return position.getX() < 10 && position.getX() >= 0 && position.getY() >= 6 && position.getY() < 10 && !hasUnitAtPosition(position);
+            return position.getX() < 10 && position.getX() >= 0 && position.getY() >= 6 && position.getY() < 10;
         }
         return false;
     }
@@ -121,10 +99,6 @@ public class Army implements Serializable {
 
     public boolean hasUnitAtPosition(Position position) {
         return getUnitAtPosition(position) != null;
-    }
-
-    public List<Unit> getUnits() {
-        return units;
     }
 
     public boolean hasUnitsToPlace() {

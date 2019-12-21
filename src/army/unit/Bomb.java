@@ -3,7 +3,7 @@ package army.unit;
 public class Bomb extends Unit {
 
     public Bomb() {
-        super(0, 11, 'B');
+        super(0, 11, 'B', Rank.Bomb);
     }
 
     @Override

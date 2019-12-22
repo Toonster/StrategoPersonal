@@ -24,8 +24,8 @@ public class Game {
         board = new Board();
         currentPlayer = new Human();
         enemyPlayer = new Computer();
-        currentArmy = new Army("Blue");
-        enemyArmy = new Army("Red");
+        currentArmy = new Army(ArmyColor.BLUE);
+        enemyArmy = new Army(ArmyColor.RED);
     }
 
 /*    public void start() {
@@ -39,13 +39,11 @@ public class Game {
     public void start() {
         currentArmy.giveStandardPosToUnits();
         update();
-        draw();
         swapTurns();
         while (currentArmy.hasUnitsToPlace()) {
-            placeUnit();
+/*            placeUnit();*/
             update();
         }
-        draw();
     }
 
  /*   public void setUpArmy() {
@@ -81,7 +79,6 @@ public class Game {
         while (!currentArmy.isDefeated() && !enemyArmy.isDefeated()) {
             processTurn();
             update();
-            draw();
             swapTurns();
         }
     }
@@ -160,18 +157,6 @@ public class Game {
             throw new StrategoException("Data is null");
         }
         return state;
-    }
-
-    public Board getBoard() {
-        return board;
-    }
-
-    public Army getCurrentArmy() {
-        return currentArmy;
-    }
-
-    public boolean armyHasUnitsToPlace() {
-        return currentArmy.hasUnitsToPlace();
     }
 }
 

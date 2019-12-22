@@ -73,13 +73,13 @@ public class Army implements Serializable {
     }
 
     public boolean isAvailableStartingPosition(Position position) {
-        if (!hasUnitAtPosition(position)) {
+        if (hasUnitAtPosition(position)) {
             return false;
         }
-        if (this.color.equals(Color.RED)) {
+        if (this.color.equals(ArmyColor.RED)) {
             return position.getX() < 10 && position.getX() >= 0 && position.getY() >= 0 && position.getY() < 4;
         }
-        if (this.color.equals(Color.BLUE)) {
+        if (this.color.equals(ArmyColor.BLUE)) {
             return position.getX() < 10 && position.getX() >= 0 && position.getY() >= 6 && position.getY() < 10;
         }
         return false;

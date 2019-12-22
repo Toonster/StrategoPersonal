@@ -1,3 +1,4 @@
+/*
 package player;
 
 import army.unit.Unit;
@@ -30,3 +31,4 @@ public class Computer extends Player {
         return false;
     }
 }
+*/

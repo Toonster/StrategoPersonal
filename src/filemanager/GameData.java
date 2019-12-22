@@ -1,3 +1,4 @@
+/*
 package filemanager;
 
 import army.Army;
@@ -44,3 +45,4 @@ public class GameData implements Serializable {
     }
 
 }
+*/

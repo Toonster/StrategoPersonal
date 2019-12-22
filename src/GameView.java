@@ -1,29 +1,33 @@
+/*
 import army.Army;
 import army.unit.Unit;
 import board.Board;
 import board.Tile;
 
 import java.util.List;
+import java.util.Scanner;
 
 public class GameView {
-    public static void showMessage(String message) {
+
+    static Scanner input = new Scanner(System.in);
+
+    public void showMessage(String message) {
         System.out.println(message);
     }
 
-    public static void showUnitsToPlace(List<Unit> unitsToPlace) {
+    public void showUnitsToPlace(List<Unit> unitsToPlace) {
         showMessage("Index. - Name - (Strength)");
         for (int i = 0; i < unitsToPlace.size(); i++){
             System.out.printf("%d. - %s", i, unitsToPlace.get(i).toString());
         }
     }
 
-    public static void showWinner (Army army) {
-        System.out.println("The game has ended!");
+    public void showWinner (Army army) {
+        showMessage("The game has ended!");
         System.out.printf("The %s army won, congratulations!\n", army.getColor());
     }
 
-    public static void drawBoard (Board board) {
-        Tile[][] gameField = board.getGameField();
+    public void drawBoard (Tile[][] gameField) {
         System.out.print(" - - - - - - - - - - - - - - - - - - - - - ");
         System.out.println();
         for (int y = 0; y < 10; y++) {
@@ -38,7 +42,46 @@ public class GameView {
         }
     }
 
-    public static void showDeadUnits(List<Unit> deadUnits) {
+    public void showDeadUnits(List<Unit> deadUnits) {
         System.out.println(deadUnits);
     }
+
+    public Unit selectUnitToPlace(List<Unit> unitsToPlace) {
+        showMessage("Pick a unit to place!");
+        showUnitsToPlace(unitsToPlace);
+        showMessage("Enter index: ");
+        boolean indexIsInvalid = true;
+        int index = 0;
+        String answer = input.nextLine();
+        while (indexIsInvalid) {
+            try {
+                index = Integer.parseInt(answer);
+                if (index < 0 || index > unitsToPlace.size()) {
+                    throw new IndexOutOfBoundsException();
+                }
+                indexIsInvalid = false;
+            } catch (NumberFormatException e) {
+                System.out.println("Not a number, try again!");
+            } catch (IndexOutOfBoundsException e) {
+                System.out.println("Invalid index, try again");
+            }
+        }
+        return unitsToPlace.get(index);
+    }
+
+    public int selectCoordinate(String axis) {
+        showMessage("Enter " + axis + " coordinate: ");
+        String answer = input.nextLine();
+        boolean coordinateIsInvalid = true;
+        int coordinate = 0;
+        while (coordinateIsInvalid)
+        try {
+            coordinate = Integer.parseInt(answer);
+            coordinateIsInvalid = false;
+        } catch (NumberFormatException e) {
+            System.out.println("Not a number, try again!");
+        }
+        return coordinate;
+    }
 }
+*/

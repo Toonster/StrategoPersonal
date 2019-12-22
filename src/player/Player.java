@@ -1,3 +1,4 @@
+/*
 package player;
 
 import common.Position;
@@ -16,3 +17,4 @@ public abstract class Player implements Serializable {
 
     public abstract boolean useStandardArmyConfig();
 }
+*/

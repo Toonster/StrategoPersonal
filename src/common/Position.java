@@ -22,10 +22,10 @@ public class Position implements Serializable {
         return y;
     }
 
-    public void add(Position position) {
+/*    public void add(Position position) {
         this.x += position.getX();
         this.y += position.getY();
-    }
+    }*/
 
     @Override
     public boolean equals(Object o) {

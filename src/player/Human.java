@@ -1,3 +1,4 @@
+/*
 package player;
 
 import army.unit.Unit;
@@ -67,3 +68,4 @@ public class Human extends Player {
         return answer.equalsIgnoreCase("y");
     }
 }
+*/

@@ -7,6 +7,7 @@ import filemanager.FileManager;
 import filemanager.GameData;
 import player.*;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Serializable;
@@ -15,88 +16,56 @@ import java.util.Random;
 
 public class Game implements Serializable {
 
-    private Player currentPlayer;
-    private Player enemyPlayer;
     private Army currentArmy;
     private Army enemyArmy;
     private Board board;
-    private GameView view;
 
     public Game() {
         board = new Board();
-        currentPlayer = new Human();
-        enemyPlayer = new Computer();
         currentArmy = new Army(ArmyColor.BLUE);
         enemyArmy = new Army(ArmyColor.RED);
     }
 
-    public void start() {
-        view.drawBoard(board.getGameField());
-        while (currentArmy.hasUnitsToPlace() || enemyArmy.hasUnitsToPlace()) {
-            setUpArmy();
-            swapTurns();
-        }
-    }
-
-/*    public void start() {
-        currentArmy.giveStandardPosToUnits();
-        update();
-        swapTurns();
-        while (currentArmy.hasUnitsToPlace()) {
-*//*            placeUnit();*//*
-            update();
-        }
-    }*/
-
- /*   public void setUpArmy() {
-        if (currentPlayer.useStandardArmyConfig()) {
-            loadArmyConfig();
-            return;
-        }
-        placeArmy();
-    }*/
-
-   /* public void placeArmy() {
-        while (currentArmy.hasUnitsToPlace()) {
-            placeUnit();
-            update();
-            if (currentPlayer instanceof Human) {
-                board.draw();
-            }
-        }
-    }*/
-    public void placeUnit(Unit selectedUnit, int x, int y) {
+    public void placeUnit(Unit selectedUnit, int x, int y) throws StrategoException {
         Position unitDestination = new Position(x, y);
-        if (currentArmy.isAvailableStartingPosition(unitDestination)) {
-            currentArmy.placeUnit(selectedUnit, unitDestination);
+        if (!currentArmy.isAvailableStartingPosition(unitDestination)) {
+            throw new StrategoException("Invalid starting position!");
         }
+        currentArmy.placeUnit(selectedUnit, unitDestination);
     }
 
-    public void play() {
-        while (!currentArmy.isDefeated() && !enemyArmy.isDefeated()) {
-            processTurn();
-            update();
-            swapTurns();
-        }
+    public Unit getUnitAtPositionOfArmy(int x, int y){
+        Position unitPosition = new Position(x, y);
+        return currentArmy.getUnitAtPosition(unitPosition);
     }
 
-    public void humanPlaceArmy() {
-
+    public boolean armyHasUnitAtPosition(int x, int y) {
+        return !currentArmy.hasUnitAtPosition(new Position(x, y));
     }
 
-    public void humanMoveUnit() {
-        Position position = currentPlayer.selectUnitPosition();
-        Unit selectedUnit = currentArmy.getUnitAtPosition(position);
-        Position destination = currentPlayer.selectDestination();
+    public String getSelectedUnitInformation(int x, int y) {
+        Unit unit = getUnitAtPositionOfArmy(x,y);
+        return String.format("Unit selected: %s at position (%d,%d)\n", unit.getClass().getSimpleName(), unit.getX(), unit.getY());
+    }
+
+    public void humanMoveUnit(int xPos, int yPos, int xDes, int yDes) throws StrategoException {
+        Unit selectedUnit = getUnitAtPositionOfArmy(xPos, yPos);
+        Position destination = new Position(xDes, yDes);
+        validateMoveAndResult(selectedUnit, destination);
+    }
+
+    private void validateMoveAndResult(Unit selectedUnit, Position destination) throws StrategoException {
         if (board.isInBounds(destination) && selectedUnit.canMoveTo(destination) && board.tilesAreAvailable(selectedUnit.getPathTo(destination))) {
             if (board.tileIsAvailable(destination)) {
-                currentArmy.placeUnit(selectedUnit, position);
+                currentArmy.placeUnit(selectedUnit, destination);
                 return;
             }
             if (enemyArmy.hasUnitAtPosition(destination)) {
                 selectedUnit.battle(enemyArmy.getUnitAtPosition(destination));
+                return;
             }
         }
+        throw new StrategoException("Invalid move");
     }
 
     public void update() {
@@ -113,39 +82,25 @@ public class Game implements Serializable {
     }
 
     public void swapTurns() {
-        Player tempPlayer = currentPlayer;
         Army tempArmy = currentArmy;
-        currentPlayer = enemyPlayer;
         currentArmy = enemyArmy;
-        enemyPlayer = tempPlayer;
         enemyArmy = tempArmy;
     }
 
-    public void save(String fileName) {
-        GameData state = new GameData(currentPlayer, currentArmy, enemyArmy);
-        FileManager.write(state, fileName);
+    public void saveArmy() {
+        FileManager.write(currentArmy, "ArmyConfig.txt");
     }
 
     public void loadArmyConfig() throws StrategoException {
-        GameData data = loadDataFromFile("ArmyConfig.txt");
-        this.currentArmy = data.getCurrentArmy();
-    }
-
-    public GameData loadDataFromFile(String fileName) throws StrategoException {
-        GameData state;
         try {
-            state = (filemanager.GameData) filemanager.FileManager.read(fileName);
+            currentArmy = (Army) filemanager.FileManager.read("ArmyConfig.txt");
         } catch (FileNotFoundException e) {
-            throw new StrategoException("Caught FileNotFoundException");
+            throw new StrategoException("File not found");
         } catch (IOException e) {
-            throw new StrategoException("Caught IOException");
+            throw new StrategoException("Error parsing data from file");
         } catch (Exception e) {
-            throw new StrategoException("Caught Exception");
+            throw new StrategoException("Caught Exception, contact administrator for further information.");
         }
-        if (state == null) {
-            throw new StrategoException("Data is null");
-        }
-        return state;
     }
 
     public void computerMoveUnit() {
@@ -194,6 +149,17 @@ public class Game implements Serializable {
 
     public boolean isOver() {
         return currentArmy.isDefeated() || enemyArmy.isDefeated();
+    }
+
+    public String getWinningArmyColor() {
+        if (currentArmy.isDefeated()) {
+            return currentArmy.getColor();
+        }
+        return enemyArmy.getColor();
+    }
+
+    public List<Unit> getDeadUnitsOfArmy() {
+        return enemyArmy.getDeadUnits();
     }
 }
 

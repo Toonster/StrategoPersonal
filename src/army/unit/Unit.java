@@ -31,7 +31,7 @@ public abstract class Unit implements Serializable {
     }
 
     public void battle(Unit enemyUnit) {
-        if ( this.strength > enemyUnit.strength) {
+        if (this.strength > enemyUnit.strength) {
             this.position = enemyUnit.position;
             enemyUnit.die();
             return;
@@ -55,7 +55,7 @@ public abstract class Unit implements Serializable {
     }
 
     public String toString() {
-        return String.format("%s - (%d)\n",this.getClass().getSimpleName(),this.strength);
+        return String.format("%s - (%d)\n", this.getClass().getSimpleName(), this.strength);
     }
 
     public boolean canMoveTo(Position destination) {
@@ -106,8 +106,9 @@ public abstract class Unit implements Serializable {
                 destinationPath.add(new Position(x, y));
             }
         }
-
-        destinationPath.remove(destinationPath.size() - 1);
+        if (destinationPath.size() >= 2) {
+            destinationPath.remove(destinationPath.size() - 1);
+        }
         destinationPath.remove(0);
         return destinationPath;
     }
@@ -117,7 +118,7 @@ public abstract class Unit implements Serializable {
     }
 
     public void setChar(Character character) {
-        this.setChar(character);
+        this.character = character;
     }
 
     public void setVisibleToEnemy() {
@@ -130,5 +131,9 @@ public abstract class Unit implements Serializable {
 
     public boolean isVisibleToEnemy() {
         return visibleToEnemy;
+    }
+
+    public Rank getRank() {
+        return this.rank;
     }
 }

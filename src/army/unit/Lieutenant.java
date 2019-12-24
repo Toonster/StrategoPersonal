@@ -3,6 +3,6 @@ package army.unit;
 public class Lieutenant extends Unit {
 
     public Lieutenant() {
-        super(1, 5, '6', Rank.Luitenant);
+        super(5, 1, '6', Rank.Luitenant);
     }
 }

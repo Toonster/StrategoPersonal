@@ -3,6 +3,6 @@ package army.unit;
 public class Marshal extends Unit {
 
     public Marshal() {
-        super(1,10, '1', Rank.Marshal);
+        super(10,1, '1', Rank.Marshal);
     }
 }

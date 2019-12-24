@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 public class Army implements Serializable {
 
     private List<Unit> units;
-    private List<Position> startingPosition;
     private ArmyColor color;
 
     public Army(ArmyColor color) {
@@ -105,8 +104,8 @@ public class Army implements Serializable {
         return this.units.stream().anyMatch(unit -> !unit.isPlaced());
     }
 
-    public String getColor() {
-        return this.color.name();
+    public ArmyColor getColor() {
+        return this.color;
     }
 
     public List<Unit> getDeadUnits() {

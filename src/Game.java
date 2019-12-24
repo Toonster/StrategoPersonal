@@ -4,10 +4,7 @@ import board.Board;
 import board.Tile;
 import common.Position;
 import filemanager.FileManager;
-import filemanager.GameData;
-import player.*;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Serializable;
@@ -26,59 +23,80 @@ public class Game implements Serializable {
         enemyArmy = new Army(ArmyColor.RED);
     }
 
-    public void placeUnit(Unit selectedUnit, int x, int y) throws StrategoException {
-        Position unitDestination = new Position(x, y);
+    public void placeUnit(Unit selectedUnit, Position unitDestination) throws StrategoException {
         if (!currentArmy.isAvailableStartingPosition(unitDestination)) {
             throw new StrategoException("Invalid starting position!");
         }
         currentArmy.placeUnit(selectedUnit, unitDestination);
     }
 
-    public Unit getUnitAtPositionOfArmy(int x, int y){
-        Position unitPosition = new Position(x, y);
+    public Unit getUnitAtPositionOfArmy(Position unitPosition){
         return currentArmy.getUnitAtPosition(unitPosition);
     }
 
-    public boolean armyHasUnitAtPosition(int x, int y) {
-        return !currentArmy.hasUnitAtPosition(new Position(x, y));
+    public boolean armyHasUnitAtPosition(Position position) {
+        return currentArmy.hasUnitAtPosition(position);
     }
 
-    public String getSelectedUnitInformation(int x, int y) {
-        Unit unit = getUnitAtPositionOfArmy(x,y);
+    public String getSelectedUnitInformation(Unit unit) {
         return String.format("Unit selected: %s at position (%d,%d)\n", unit.getClass().getSimpleName(), unit.getX(), unit.getY());
     }
 
-    public void humanMoveUnit(int xPos, int yPos, int xDes, int yDes) throws StrategoException {
-        Unit selectedUnit = getUnitAtPositionOfArmy(xPos, yPos);
-        Position destination = new Position(xDes, yDes);
-        validateMoveAndResult(selectedUnit, destination);
+    public void moveUnit(Unit selectedUnit, Position destination) throws StrategoException {
+        try {
+            validateMove(selectedUnit, destination);
+        } catch (StrategoException e) {
+            throw new StrategoException(e.getMessage());
+        }
+        processMove(selectedUnit, destination);
     }
 
-    private void validateMoveAndResult(Unit selectedUnit, Position destination) throws StrategoException {
-        if (board.isInBounds(destination) && selectedUnit.canMoveTo(destination) && board.tilesAreAvailable(selectedUnit.getPathTo(destination))) {
-            if (board.tileIsAvailable(destination)) {
-                currentArmy.placeUnit(selectedUnit, destination);
-                return;
-            }
-            if (enemyArmy.hasUnitAtPosition(destination)) {
-                selectedUnit.battle(enemyArmy.getUnitAtPosition(destination));
-                return;
-            }
+    public void validateMove(Unit selectedUnit, Position destination) throws StrategoException {
+        boolean isInBounds = board.isInBounds(destination);
+        boolean canMoveTo = selectedUnit.canMoveTo(destination);
+        boolean tilesAreAvailable = board.positionsAreFree(selectedUnit.getPathTo(destination));
+        boolean friendlyUnitAtPosition = currentArmy.hasUnitAtPosition(destination);
+        if (isInBounds && canMoveTo && tilesAreAvailable && !friendlyUnitAtPosition) {
+            return;
         }
         throw new StrategoException("Invalid move");
     }
 
+    private void processMove(Unit selectedUnit, Position destination) {
+        boolean available = board.tileIsAvailable(destination);
+        if (available) {
+            currentArmy.placeUnit(selectedUnit, destination);
+            return;
+        }
+        boolean unitAtPlace = enemyArmy.hasUnitAtPosition(destination);
+        if (unitAtPlace) {
+            selectedUnit.battle(enemyArmy.getUnitAtPosition(destination));
+        }
+    }
+
     public void update() {
         board.clearUnits();
-        board.updateUnits(currentArmy.getPlacedUnits());
-        List<Unit> enemyUnits = enemyArmy.getPlacedUnits();
-        enemyUnits.forEach(unit -> {
+        if (currentArmy.getColor() == ArmyColor.BLUE) {
+            board.updateUnits(currentArmy.getPlacedUnits());
+            List<Unit> units = enemyArmy.getPlacedUnits();
+            armySetUnknown(units);
+            board.updateUnits(units);
+        } else {
+            board.updateUnits(enemyArmy.getPlacedUnits());
+            List<Unit> unitsVisible = currentArmy.getPlacedUnits();
+            armySetUnknown(unitsVisible );
+            board.updateUnits(unitsVisible );
+        }
+        enemyArmy.clearUnitVisibility();
+        currentArmy.clearUnitVisibility();
+    }
+
+    public void armySetUnknown(List<Unit> unitsVisible) {
+        unitsVisible.forEach(unit -> {
             if (!unit.isVisibleToEnemy()) {
                 unit.setChar('X');
             }
         });
-        board.updateUnits(enemyUnits);
-        enemyArmy.clearUnitVisibility();
     }
 
     public void swapTurns() {
@@ -103,26 +121,6 @@ public class Game implements Serializable {
         }
     }
 
-    public void computerMoveUnit() {
-        Random rand = new Random();
-        boolean moveIsDone = false;
-        while (!moveIsDone) {
-            List<Unit> placedUnits = currentArmy.getPlacedUnits();
-            Unit selectedUnit = placedUnits.get(rand.nextInt(placedUnits.size()));
-            Position destination = new Position(rand.nextInt(10), rand.nextInt(10));
-            if (board.isInBounds(destination) && selectedUnit.canMoveTo(destination) && board.tilesAreAvailable(selectedUnit.getPathTo(destination))) {
-                if (board.tileIsAvailable(destination)) {
-                    currentArmy.placeUnit(selectedUnit, destination);
-                    moveIsDone = true;
-                }
-                if (enemyArmy.hasUnitAtPosition(destination)) {
-                    selectedUnit.battle(enemyArmy.getUnitAtPosition(destination));
-                    moveIsDone = true;;
-                }
-            }
-        }
-    }
-
     public void computerPlaceArmy() {
         Random rand = new Random();
         while (currentArmy.hasUnitsToPlace()) {
@@ -133,6 +131,10 @@ public class Game implements Serializable {
                 currentArmy.placeUnit(selectedUnit, unitDestination);
             }
         }
+    }
+
+    public void humanPlaceArmy() {
+        currentArmy.giveStandardPosToUnits();
     }
 
     public boolean currentArmyHasUnitsToPlace() {
@@ -151,15 +153,27 @@ public class Game implements Serializable {
         return currentArmy.isDefeated() || enemyArmy.isDefeated();
     }
 
-    public String getWinningArmyColor() {
-        if (currentArmy.isDefeated()) {
-            return currentArmy.getColor();
-        }
-        return enemyArmy.getColor();
+    public List<Unit> getDeadUnitsOfCurrentArmy() {
+        return currentArmy.getDeadUnits();
+    }
+    public List<Unit> getDeadUnitsOfEnemyArmy() {
+        return enemyArmy.getDeadUnits();
     }
 
-    public List<Unit> getDeadUnitsOfArmy() {
-        return enemyArmy.getDeadUnits();
+    public List<Unit> getArmyUnits() {
+        return currentArmy.getPlacedUnits();
+    }
+
+    public ArmyColor getArmyColor() {
+        return currentArmy.getColor();
+    }
+
+    public boolean allUnitsPlaced() {
+        return currentArmy.hasUnitsToPlace() && enemyArmy.hasUnitsToPlace();
+    }
+
+    public int getTotalStrengthOfArmy() {
+        return currentArmy.calculateTotalStrength();
     }
 }
 

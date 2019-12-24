@@ -50,7 +50,7 @@ public class Board {
         return position.getX() >= 0 && position.getX() < WIDTH  && position.getY() >= 0 && position.getY() < HEIGTH;
     }
 
-    public boolean tilesAreAvailable(List<Position> tilePositions) {
+    public boolean positionsAreFree(List<Position> tilePositions) {
         if (tilePositions.isEmpty()) {
             return true;
         }

@@ -2,8 +2,8 @@ package board;
 
 public class Surface {
 
-    private boolean accessible;
-    private char character;
+    private final boolean accessible;
+    private final char character;
 
     public Surface( boolean accessible, char character) {
         this.accessible = accessible;

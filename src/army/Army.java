@@ -3,10 +3,10 @@ package army;
 import army.unit.*;
 import common.Position;
 
-import java.awt.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 public class Army implements Serializable {
@@ -63,7 +63,7 @@ public class Army implements Serializable {
         return totalStrength;
     }
 
-    public Unit getUnitAtPosition(Position position){
+    public Unit getUnitAtPosition(Position position) {
         return units.stream().filter(unit -> unit.atPosition(position)).findFirst().orElse(null);
     }
 
@@ -85,19 +85,18 @@ public class Army implements Serializable {
     }
 
     public List<Unit> getUnitsToPlace() {
-      return this.units.stream().filter(unit -> !unit.isPlaced()).collect(Collectors.toList());
+        return this.units.stream().filter(unit -> !unit.isPlaced()).collect(Collectors.toList());
     }
 
     public List<Unit> getPlacedUnits() {
-        return this.units.stream().filter(Unit::isPlaced).map(Unit::new).collect(Collectors.toList());
+        return this.units.stream().filter(Unit::isPlaced).collect(Collectors.toList());
     }
 
     public boolean isDefeated() {
-        boolean flagIsDead = units.stream().filter(unit -> unit.getRank() == Unit.Rank.Flag).noneMatch(Unit::isAlive);
-        /*List<Unit> placedUnits = this.getPlacedUnits();
-        List<Unit> movableUnits = placedUnits.stream().filter(unit -> !(unit.getRank() == Unit.Rank.Flag || unit.getRank() == Unit.Rank.Bomb)).collect(Collectors.toList());
-        boolean hasMovableUnit = !movableUnits.isEmpty();*/
-        return (flagIsDead);
+        boolean flagIsDead = units.stream().anyMatch(unit -> unit.getRank() == Unit.Rank.Flag && unit.isDead());
+        List<Unit> placedUnits = this.getPlacedUnits();
+        boolean hasMovableUnit = placedUnits.stream().anyMatch(unit -> unit.getRank() != Unit.Rank.Flag && unit.getRank() != Unit.Rank.Bomb);
+        return (flagIsDead || !hasMovableUnit);
     }
 
     public boolean hasUnitAtPosition(Position position) {
@@ -113,20 +112,26 @@ public class Army implements Serializable {
     }
 
     public List<Unit> getDeadUnits() {
-        return units.stream().filter(unit -> !unit.isAlive()).collect(Collectors.toList());
+        return units.stream().filter(Unit::isDead).collect(Collectors.toList());
     }
 
-    public void clearUnitVisibility() {
-        this.units.forEach(Unit::clearVisibleToEnemy);
+    public void updateUnitVisibility() {
+        this.units.forEach(Unit::updateVisibleToEnemy);
     }
 
     public void giveStandardPosToUnits() {
         int index = 0;
         for (int y = 6; y < 10; y++) {
             for (int x = 0; x < 10; x++) {
-                units.get(index++).place(new Position(x,y));
+                units.get(index++).place(new Position(x, y));
             }
         }
+    }
+
+    public Unit selectRandomPlacedUnit() {
+        Random rand = new Random();
+        List<Unit> placedUnits = this.units.stream().filter(Unit::isPlaced).collect(Collectors.toList());
+        return placedUnits.get(rand.nextInt(placedUnits.size()));
     }
 }
 

@@ -30,24 +30,8 @@ public class Game implements Serializable {
         currentArmy.placeUnit(selectedUnit, unitDestination);
     }
 
-    public Unit getUnitAtPositionOfArmy(Position unitPosition){
-        return currentArmy.getUnitAtPosition(unitPosition);
-    }
-
-    public boolean armyHasUnitAtPosition(Position position) {
-        return currentArmy.hasUnitAtPosition(position);
-    }
-
-    public String getSelectedUnitInformation(Unit unit) {
-        return String.format("Unit selected: %s at position (%d,%d)\n", unit.getClass().getSimpleName(), unit.getX(), unit.getY());
-    }
-
     public void moveUnit(Unit selectedUnit, Position destination) throws StrategoException {
-        try {
-            validateMove(selectedUnit, destination);
-        } catch (StrategoException e) {
-            throw new StrategoException(e.getMessage());
-        }
+        validateMove(selectedUnit, destination);
         processMove(selectedUnit, destination);
     }
 
@@ -56,14 +40,16 @@ public class Game implements Serializable {
         boolean canMoveTo = selectedUnit.canMoveTo(destination);
         boolean tilesAreAvailable = board.positionsAreFree(selectedUnit.getPathTo(destination));
         boolean friendlyUnitAtPosition = currentArmy.hasUnitAtPosition(destination);
-        if (isInBounds && canMoveTo && tilesAreAvailable && !friendlyUnitAtPosition) {
+        boolean isAccessible = board.tileIsAccessible(destination);
+
+        if (isInBounds && canMoveTo && tilesAreAvailable && !friendlyUnitAtPosition && isAccessible) {
             return;
         }
         throw new StrategoException("Invalid move");
     }
 
     private void processMove(Unit selectedUnit, Position destination) {
-        boolean available = board.tileIsAvailable(destination);
+        boolean available = board.tileIsFree(destination);
         if (available) {
             currentArmy.placeUnit(selectedUnit, destination);
             return;
@@ -76,29 +62,13 @@ public class Game implements Serializable {
 
     public void update() {
         board.clearUnits();
-        if (currentArmy.getColor() == ArmyColor.BLUE) {
-            enemyArmy.clearUnitVisibility();
-            currentArmy.clearUnitVisibility();
-            board.updateUnits(currentArmy.getPlacedUnits());
-            List<Unit> units = enemyArmy.getPlacedUnits();
-            armySetUnknown(units);
-            board.updateUnits(units);
-        } else {
-            board.updateUnits(enemyArmy.getPlacedUnits());
-            List<Unit> unitsVisible = currentArmy.getPlacedUnits();
-            armySetUnknown(unitsVisible );
-            board.updateUnits(unitsVisible );
-        }
-    }
-
-    public void armySetUnknown(List<Unit> unitsVisible) {
-        unitsVisible.forEach(unit -> {
-            if (!unit.isVisibleToEnemy()) {
-                unit.setChar('X');
-            } else {
-                System.out.println();
-            }
-        });
+        currentArmy.updateUnitVisibility();
+        enemyArmy.updateUnitVisibility();
+        List<Unit> currentUnits = currentArmy.getPlacedUnits();
+        List<Unit> enemyUnits = enemyArmy.getPlacedUnits();
+        boolean isPlayer = currentArmy.getColor() == ArmyColor.BLUE;
+        board.updateUnits(currentUnits, isPlayer);
+        board.updateUnits(enemyUnits, !isPlayer);
     }
 
     public void swapTurns() {
@@ -123,14 +93,23 @@ public class Game implements Serializable {
         }
     }
 
+    public boolean armyHasUnitAtPosition(Position position) {
+        return currentArmy.hasUnitAtPosition(position);
+    }
+
+    public String getSelectedUnitInformation(Unit unit) {
+        return String.format("Unit selected: %s at position (%d,%d)\n", unit.getClass().getSimpleName(), unit.getX(), unit.getY());
+    }
+
     public void computerPlaceArmy() {
         Random rand = new Random();
         while (currentArmy.hasUnitsToPlace()) {
             List<Unit> unitsToPlace = currentArmy.getUnitsToPlace();
             Unit selectedUnit = unitsToPlace.get(rand.nextInt(unitsToPlace.size()));
             Position unitDestination = new Position(rand.nextInt(10), rand.nextInt(10));
-            if (currentArmy.isAvailableStartingPosition(unitDestination)) {
-                currentArmy.placeUnit(selectedUnit, unitDestination);
+            try {
+                moveUnit(selectedUnit, unitDestination);
+            } catch (StrategoException ignored) {
             }
         }
     }
@@ -143,7 +122,7 @@ public class Game implements Serializable {
         return currentArmy.hasUnitsToPlace();
     }
 
-    public List<Unit> getCurrentArmyUnitsToPlace() {
+    public List<Unit> getArmyUnitsToPlace() {
         return currentArmy.getUnitsToPlace();
     }
 
@@ -151,31 +130,32 @@ public class Game implements Serializable {
         return board.getGameField();
     }
 
-    public boolean isOver() {
-        return currentArmy.isDefeated() || enemyArmy.isDefeated();
+    public boolean isPlaying() {
+        return !currentArmy.isDefeated() && !enemyArmy.isDefeated();
     }
 
     public List<Unit> getDeadUnitsOfCurrentArmy() {
         return currentArmy.getDeadUnits();
     }
+
     public List<Unit> getDeadUnitsOfEnemyArmy() {
         return enemyArmy.getDeadUnits();
-    }
-
-    public List<Unit> getArmyUnits() {
-        return currentArmy.getPlacedUnits();
     }
 
     public ArmyColor getArmyColor() {
         return currentArmy.getColor();
     }
 
-    public boolean allUnitsPlaced() {
-        return currentArmy.hasUnitsToPlace() && enemyArmy.hasUnitsToPlace();
+    public Unit selectRandomPlacedUnitFromArmy() {
+        return currentArmy.selectRandomPlacedUnit();
     }
 
-    public int getTotalStrengthOfArmy() {
-        return currentArmy.calculateTotalStrength();
+    public ArmyColor getWinner() {
+        return this.currentArmy.isDefeated() ? this.enemyArmy.getColor() : this.currentArmy.getColor();
+    }
+
+    public Unit getUnitAtPositionOfArmy(Position position) {
+        return currentArmy.getUnitAtPosition(position);
     }
 }
 

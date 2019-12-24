@@ -6,8 +6,8 @@ import java.util.Objects;
 
 public class Position implements Serializable {
 
-    private int x;
-    private int y;
+    private final int x;
+    private final int y;
 
     public Position(int x, int y) {
         this.x = x;
@@ -22,11 +22,6 @@ public class Position implements Serializable {
         return y;
     }
 
-/*    public void add(Position position) {
-        this.x += position.getX();
-        this.y += position.getY();
-    }*/
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -34,5 +29,10 @@ public class Position implements Serializable {
         Position position = (Position) o;
         return x == position.x &&
                 y == position.y;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
     }
 }

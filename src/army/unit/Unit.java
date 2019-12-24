@@ -6,21 +6,21 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Unit implements Serializable, Cloneable {
+public class Unit implements Serializable {
 
     protected Position position;
     private boolean alive = true;
-    private boolean visibleToEnemy = false;
-    private int strength;
-    private int movementSpeed;
-    private char character;
-    private Rank rank;
+    private final int strength;
+    private final int movementSpeed;
+    private final char character;
+    private final Rank rank;
+    private int visibleForTurns = 0;
 
     public enum Rank {
         Bomb, Captain, Colonel,
-        Flag, General, Luitenant,
+        Flag, General, Lieutenant,
         Major, Marshal, Miner,
-        Scout, Sergeant, Spy;
+        Scout, Sergeant, Spy
     }
 
     public Unit(int strength, int movementSpeed, char character, Rank rank) {
@@ -30,19 +30,9 @@ public class Unit implements Serializable, Cloneable {
         this.rank = rank;
     }
 
-    public Unit(Unit unit) {
-        this.strength = unit.strength;
-        this.movementSpeed = unit.movementSpeed;
-        this.character = unit.character;
-        this.rank = unit.rank;
-        this.position = unit.position;
-        this.visibleToEnemy = unit.visibleToEnemy;
-        this.alive = unit.alive;
-    }
-
     public void battle(Unit enemyUnit) {
         if (this.strength > enemyUnit.strength) {
-            this.position = enemyUnit.position;
+            this.position = new Position(enemyUnit.getX(), enemyUnit.getY());
             enemyUnit.die();
             return;
         }
@@ -78,8 +68,8 @@ public class Unit implements Serializable, Cloneable {
         this.position = position;
     }
 
-    public boolean isAlive() {
-        return alive;
+    public boolean isDead() {
+        return !alive;
     }
 
     public int getX() {
@@ -127,20 +117,18 @@ public class Unit implements Serializable, Cloneable {
         return this.character;
     }
 
-    public void setChar(Character character) {
-        this.character = character;
-    }
-
     public void setVisibleToEnemy() {
-        visibleToEnemy = true;
+        visibleForTurns = 3;
     }
 
-    public void clearVisibleToEnemy() {
-        visibleToEnemy = false;
+    public void updateVisibleToEnemy() {
+        if (visibleForTurns > 0) {
+            this.visibleForTurns--;
+        }
     }
 
     public boolean isVisibleToEnemy() {
-        return visibleToEnemy;
+        return visibleForTurns > 0;
     }
 
     public Rank getRank() {

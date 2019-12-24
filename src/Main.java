@@ -19,13 +19,7 @@ public abstract class Main {
     public static void main(String[] args) {
         showMessage("Welcome to Stratego!");
         Game game = initializeGame();
-        game.humanPlaceArmy();
-        game.swapTurns();
-        game.computerPlaceArmy();
-        game.update();
-        game.swapTurns();
-        drawBoard(game.getGameField());
-        //startPlacingPhase(game);
+        startPlacingPhase(game);
         startBattlePhase(game);
         showWinner(game);
         showMessage("Thank you for playing!");
@@ -38,73 +32,22 @@ public abstract class Main {
         System.out.println(message);
     }
 
-    public static void showUnitsToPlace(List<Unit> unitsToPlace) {
-        showMessage("Index. - Name - (Strength)");
-        for (int i = 0; i < unitsToPlace.size(); i++) {
-            System.out.printf("%d. - %s", i, unitsToPlace.get(i).toString());
-        }
-    }
-
-    public static void showWinner(Game game) {
-        showMessage("The game has ended!");
-        System.out.printf("The %s army won, congratulations!\n", game.getArmyColor());
-    }
-
-    public static void drawBoard(Tile[][] gameField) {
-        System.out.print(" - - - - - - - - - - - - - - - - - - - - - ");
-        System.out.println();
-        for (int y = 0; y < 10; y++) {
-            for (int x = 0; x < 10; x++) {
-                System.out.print(" | ");
-                System.out.print(gameField[x][y]);
-            }
-            System.out.print(" |");
-            System.out.println();
-            System.out.print(" - - - - - - - - - - - - - - - - - - - - - ");
-            System.out.println();
-        }
-    }
-
-    public static void showDeadUnits(List<Unit> deadUnits) {
-        System.out.println(deadUnits);
-    }
-
-    public static Unit selectUnitToPlace(List<Unit> unitsToPlace) {
-        showMessage("Pick a unit to place!");
-        boolean indexIsInvalid = true;
-        int index = 0;
-        while (indexIsInvalid) {
+    public static Game initializeGame() {
+        Game game = null;
+        showMessage("Would you like to load a previous game? (y/n): ");
+        String loadGameAnswer = input.nextLine();
+        if (loadGameAnswer.equalsIgnoreCase("y")) {
             try {
-                showUnitsToPlace(unitsToPlace);
-                showMessage("Enter index: ");
-                String answer = input.nextLine();
-                index = Integer.parseInt(answer);
-                if (index < 0 || index > unitsToPlace.size()) {
-                    throw new IndexOutOfBoundsException();
-                }
-                indexIsInvalid = false;
-            } catch (NumberFormatException e) {
-                System.out.println("Not a number, try again!");
-            } catch (IndexOutOfBoundsException e) {
-                System.out.println("Invalid index, try again");
+                game = loadGame();
+                showMessage("Game loaded");
+            } catch (StrategoException e) {
+                showMessage(e.getMessage());
             }
+        } else {
+            game = new Game();
+            showMessage("New game created");
         }
-        return unitsToPlace.get(index);
-    }
-
-    public static int selectCoordinate(CoordinateAxis axis) {
-        boolean coordinateIsInvalid = true;
-        int coordinate = 0;
-        while (coordinateIsInvalid)
-            try {
-                showMessage("Enter " + axis + " coordinate: ");
-                String answer = input.nextLine();
-                coordinate = Integer.parseInt(answer);
-                coordinateIsInvalid = false;
-            } catch (NumberFormatException e) {
-                showMessage("Invalid input format, try again!");
-            }
-        return coordinate;
+        return game;
     }
 
     public static Game loadGame() throws StrategoException {
@@ -126,61 +69,89 @@ public abstract class Main {
         return game;
     }
 
-    public static Game initializeGame() {
-        Game game = null;
-        showMessage("Would you like to load a previous game? (y/n): ");
-        String loadGameAnswer = input.nextLine();
-        if (loadGameAnswer.equalsIgnoreCase("y")) {
-            try {
-                game = loadGame();
-                showMessage("Game loaded");
-            } catch (StrategoException e) {
-                showMessage(e.getMessage());
-            }
-        } else {
-            game = new Game();
-            showMessage("New game created");
-        }
-        return game;
-    }
-
     public static void startPlacingPhase(Game game) {
         showMessage("Placing phase");
-        if (useStandardConfigArmy()) {
+        showMessage("Would you like to use a standard configuration for your army? (y/n): ");
+        String loadArmyAnswer = input.nextLine();
+        if (loadArmyAnswer.equalsIgnoreCase("y")) {
+            loadStandardArmyConfig(game);
+        }
+        gameTick(game);
+        while (game.currentArmyHasUnitsToPlace()) {
+            Unit selectedUnit = selectUnitToPlace(game.getArmyUnitsToPlace());
+            Position unitDestination = askPosition();
             try {
-                game.loadArmyConfig();
+                game.placeUnit(selectedUnit, unitDestination);
+                gameTick(game);
             } catch (StrategoException e) {
                 showMessage(e.getMessage());
-            }
-        } else {
-            while (game.currentArmyHasUnitsToPlace()) {
-                Unit selectedUnit = selectUnitToPlace(game.getCurrentArmyUnitsToPlace());
-                Position unitDestination = askPosition();
-                try {
-                    game.placeUnit(selectedUnit, unitDestination);
-                    gameTick(game);
-                } catch (StrategoException e) {
-                    showMessage(e.getMessage());
-                }
             }
         }
         showMessage("All your units have been placed!");
         game.swapTurns();
         game.computerPlaceArmy();
+        game.swapTurns();
         gameTick(game);
         showMessage("Placing phase done!");
     }
 
-    public static boolean useStandardConfigArmy() {
-        showMessage("Would you like to use a standard configuration for your army? (y/n): ");
-        String loadArmyAnswer = input.nextLine();
-        return loadArmyAnswer.equalsIgnoreCase("y");
+    public static void loadStandardArmyConfig(Game game) {
+        try {
+            game.loadArmyConfig();
+        } catch (StrategoException e) {
+            showMessage(e.getMessage());
+        }
+    }
+
+    public static Unit selectUnitToPlace(List<Unit> unitsToPlace) {
+        showMessage("Pick a unit to place!");
+        boolean indexIsInvalid = true;
+        int index = 0;
+        while (indexIsInvalid) {
+            try {
+                showUnitsToPlace(unitsToPlace);
+                showMessage("Enter index: ");
+                String answer = input.nextLine();
+                index = Integer.parseInt(answer);
+                if (index < 0 || index >= unitsToPlace.size()) {
+                    throw new IndexOutOfBoundsException();
+                }
+                indexIsInvalid = false;
+            } catch (NumberFormatException e) {
+                System.out.println("Not a number, try again!");
+            } catch (IndexOutOfBoundsException e) {
+                System.out.println("Invalid index, try again");
+            }
+        }
+        return unitsToPlace.get(index);
+    }
+
+    public static void showUnitsToPlace(List<Unit> unitsToPlace) {
+        showMessage("Index. - Name - (Strength)");
+        for (int i = 0; i < unitsToPlace.size(); i++) {
+            System.out.printf("%d. - %s", i, unitsToPlace.get(i).toString());
+        }
     }
 
     public static Position askPosition() {
         int x = selectCoordinate(CoordinateAxis.X);
         int y = selectCoordinate(CoordinateAxis.Y);
         return new Position(x, y);
+    }
+
+    public static int selectCoordinate(CoordinateAxis axis) {
+        boolean coordinateIsInvalid = true;
+        int coordinate = 0;
+        while (coordinateIsInvalid)
+            try {
+                showMessage("Enter " + axis + " coordinate: ");
+                String answer = input.nextLine();
+                coordinate = Integer.parseInt(answer);
+                coordinateIsInvalid = false;
+            } catch (NumberFormatException e) {
+                showMessage("Invalid input format, try again!");
+            }
+        return coordinate;
     }
 
     public static void gameTick(Game game) {
@@ -190,14 +161,33 @@ public abstract class Main {
         showDeadUnits(game.getDeadUnitsOfEnemyArmy());
     }
 
+    public static void drawBoard(Tile[][] gameField) {
+        System.out.print(" - - - - - - - - - - - - - - - - - - - - - ");
+        System.out.println();
+        for (int y = 0; y < 10; y++) {
+            for (int x = 0; x < 10; x++) {
+                System.out.print(" | ");
+                System.out.print(gameField[x][y]);
+            }
+            System.out.print(" |");
+            System.out.println();
+            System.out.print(" - - - - - - - - - - - - - - - - - - - - - ");
+            System.out.println();
+        }
+    }
+
+    public static void showDeadUnits(List<Unit> deadUnits) {
+        System.out.println(deadUnits);
+    }
+
 
     public static void startBattlePhase(Game game) {
         showMessage("Battle phase");
-        while (!game.isOver()) {
+        while (game.isPlaying()) {
             Unit selectedUnit = null;
             Position destination;
-            boolean moveIsDone = false;
-            while (!moveIsDone) {
+            boolean moveIsUnfinished = true;
+            while (moveIsUnfinished) {
                 if (game.getArmyColor() == ArmyColor.BLUE) {
                     boolean invalidUnitSelected = true;
                     while (invalidUnitSelected) {
@@ -222,18 +212,11 @@ public abstract class Main {
                     destination = new Position(xDes, yDes);
                 } else {
                     destination = generatePosition();
-                    List<Unit> placedUnits = game.getArmyUnits();
-                    selectedUnit = placedUnits.get(rand.nextInt(placedUnits.size()));
+                    selectedUnit = game.selectRandomPlacedUnitFromArmy();
                 }
                 try {
-                    game.moveUnit(selectedUnit, destination);
-                    moveIsDone = true;
-                    game.update();
-                    /*if (game.getArmyColor() == ArmyColor.RED) {
-                        gameTick(game);
-                    }*/
-                    gameTick(game);
-                    game.swapTurns();
+                    gameMove(selectedUnit, destination, game);
+                    moveIsUnfinished = false;
                 } catch (StrategoException e) {
                     if (game.getArmyColor() == ArmyColor.BLUE) {
                         showMessage(e.getMessage());
@@ -243,53 +226,22 @@ public abstract class Main {
         }
     }
 
-    public static void saveGame(String fileName, Game game) {
-        FileManager.write(game, fileName);
-    }
-
     public static Position generatePosition() {
         return new Position(rand.nextInt(10), rand.nextInt(10));
     }
-}
 
-
-
-
-/*    public static void startPlacingPhase(Game game) {
-        showMessage("Placing phase");
-        while (!game.allUnitsPlaced()) {
-            Unit selectedUnit = null;
-            Position unitDestination = null;
-            if (game.getArmyColor() == ArmyColor.BLUE) {
-                if (useStandardConfigArmy()) {
-                    try {
-                        game.loadArmyConfig();
-                    } catch (StrategoException e) {
-                        showMessage(e.getMessage());
-                    }
-                } else {
-                    while (game.currentArmyHasUnitsToPlace()) {
-                        selectedUnit = selectUnitToPlace(game.getCurrentArmyUnitsToPlace());
-                        unitDestination = askPosition();
-                    }
-                }
-            } else {
-                List<Unit> unitsToPlace = game.getCurrentArmyUnitsToPlace();
-                selectedUnit = unitsToPlace.get(rand.nextInt(unitsToPlace.size()));
-                unitDestination = generatePosition();
-            }
-            try {
-                game.placeUnit(selectedUnit, unitDestination);
-                gameTick(game);
-                game.swapTurns();
-            } catch (StrategoException e) {
-                showMessage(e.getMessage());
-            }
-        }
-        showMessage("All your units have been placed!");
-        game.swapTurns();
-        game.computerPlaceArmy();
+    public static void gameMove(Unit selectedUnit, Position destination, Game game) throws StrategoException {
+        game.moveUnit(selectedUnit, destination);
         gameTick(game);
-        showMessage("Placing phase done!");
+        game.swapTurns();
     }
-}*/
+
+    public static void showWinner(Game game) {
+        showMessage("The game has ended!");
+        System.out.printf("The %s army won, congratulations!\n", game.getWinner());
+    }
+
+    public static void saveGame(String fileName, Game game) {
+        FileManager.write(game, fileName);
+    }
+}

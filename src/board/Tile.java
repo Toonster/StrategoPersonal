@@ -3,7 +3,7 @@ package board;
 public class Tile {
 
     private char character;
-    private Surface surface;
+    private final Surface surface;
 
     public Tile(Surface surface) {
         this.surface = surface;

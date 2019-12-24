@@ -7,17 +7,17 @@ import java.util.List;
 
 public class Board {
 
-    private final int HEIGTH = 10;
+    private final int HEIGHT = 10;
     private final int WIDTH = 10;
     private Tile[][] gameField;
 
     public Board() {
-        gameField = new Tile[WIDTH][HEIGTH];
+        gameField = new Tile[WIDTH][HEIGHT];
         initializeField();
     }
 
     public void initializeField() {
-        for (int y = 0; y < HEIGTH; y++) {
+        for (int y = 0; y < HEIGHT; y++) {
             for (int x = 0; x < WIDTH; x++) {
                 if ((y == 4 || y == 5) && (x == 2 || x == 3 || x == 6 || x == 7)) {
                     Tile waterTile = new Tile(new Water());
@@ -31,7 +31,7 @@ public class Board {
     }
 
     public void clearUnits() {
-        for (int y = 0; y < HEIGTH; y++) {
+        for (int y = 0; y < HEIGHT; y++) {
             for (int x = 0; x < WIDTH; x++) {
                 if (!((y == 4 || y == 5) && (x == 2 || x == 3 || x == 6 || x == 7))) {
                     gameField[x][y].clear();
@@ -40,14 +40,15 @@ public class Board {
         }
     }
 
-    public void updateUnits(List<Unit> units) {
-        for (Unit unit: units){
-                gameField[unit.getX()][unit.getY()].update(unit.getCharacter());
+    public void updateUnits(List<Unit> units, boolean visible) {
+        for (Unit unit : units) {
+            char unitCharacter = unit.isVisibleToEnemy() ? unit.getCharacter() : visible ? unit.getCharacter() : 'X';
+            gameField[unit.getX()][unit.getY()].update(unitCharacter);
         }
     }
 
     public boolean isInBounds(Position position) {
-        return position.getX() >= 0 && position.getX() < WIDTH  && position.getY() >= 0 && position.getY() < HEIGTH;
+        return position.getX() >= 0 && position.getX() < WIDTH && position.getY() >= 0 && position.getY() < HEIGHT;
     }
 
     public boolean positionsAreFree(List<Position> tilePositions) {
@@ -56,15 +57,19 @@ public class Board {
         }
         boolean tilesAvailable = true;
         for (Position tilePosition : tilePositions) {
-            if (!tileIsAvailable(tilePosition)) {
+            if (!tileIsFree(tilePosition) || !tileIsAccessible(tilePosition)) {
                 tilesAvailable = false;
             }
         }
         return tilesAvailable;
     }
 
-    public boolean tileIsAvailable(Position tilePosition) {
-        return this.gameField[tilePosition.getX()][tilePosition.getY()].isAccessible() && this.gameField[tilePosition.getX()][tilePosition.getY()].isFree();
+    public boolean tileIsFree(Position tilePosition) {
+        return this.gameField[tilePosition.getX()][tilePosition.getY()].isFree();
+    }
+
+    public boolean tileIsAccessible(Position tilePosition) {
+        return this.gameField[tilePosition.getX()][tilePosition.getY()].isAccessible();
     }
 
     public Tile[][] getGameField() {

@@ -108,14 +108,10 @@ public class Game implements Serializable {
             Unit selectedUnit = unitsToPlace.get(rand.nextInt(unitsToPlace.size()));
             Position unitDestination = new Position(rand.nextInt(10), rand.nextInt(10));
             try {
-                moveUnit(selectedUnit, unitDestination);
+                placeUnit(selectedUnit, unitDestination);
             } catch (StrategoException ignored) {
             }
         }
-    }
-
-    public void humanPlaceArmy() {
-        currentArmy.giveStandardPosToUnits();
     }
 
     public boolean currentArmyHasUnitsToPlace() {

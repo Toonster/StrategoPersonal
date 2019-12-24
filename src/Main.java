@@ -43,7 +43,8 @@ public abstract class Main {
             } catch (StrategoException e) {
                 showMessage(e.getMessage());
             }
-        } else {
+        }
+        if (game == null){
             game = new Game();
             showMessage("New game created");
         }
@@ -76,7 +77,6 @@ public abstract class Main {
         if (loadArmyAnswer.equalsIgnoreCase("y")) {
             loadStandardArmyConfig(game);
         }
-        gameTick(game);
         while (game.currentArmyHasUnitsToPlace()) {
             Unit selectedUnit = selectUnitToPlace(game.getArmyUnitsToPlace());
             Position unitDestination = askPosition();
@@ -90,8 +90,8 @@ public abstract class Main {
         showMessage("All your units have been placed!");
         game.swapTurns();
         game.computerPlaceArmy();
-        game.swapTurns();
         gameTick(game);
+        game.swapTurns();
         showMessage("Placing phase done!");
     }
 
@@ -156,9 +156,11 @@ public abstract class Main {
 
     public static void gameTick(Game game) {
         game.update();
-        showDeadUnits(game.getDeadUnitsOfCurrentArmy());
-        drawBoard(game.getGameField());
-        showDeadUnits(game.getDeadUnitsOfEnemyArmy());
+        if (game.getArmyColor() == ArmyColor.RED) {
+            showDeadUnits(game.getDeadUnitsOfCurrentArmy());
+            drawBoard(game.getGameField());
+            showDeadUnits(game.getDeadUnitsOfEnemyArmy());
+        }
     }
 
     public static void drawBoard(Tile[][] gameField) {

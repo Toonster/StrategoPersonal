@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Unit implements Serializable {
+public class Unit implements Serializable, Cloneable {
 
     protected Position position;
     private boolean alive = true;
@@ -28,6 +28,16 @@ public abstract class Unit implements Serializable {
         this.movementSpeed = movementSpeed;
         this.character = character;
         this.rank = rank;
+    }
+
+    public Unit(Unit unit) {
+        this.strength = unit.strength;
+        this.movementSpeed = unit.movementSpeed;
+        this.character = unit.character;
+        this.rank = unit.rank;
+        this.position = unit.position;
+        this.visibleToEnemy = unit.visibleToEnemy;
+        this.alive = unit.alive;
     }
 
     public void battle(Unit enemyUnit) {

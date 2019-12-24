@@ -77,6 +77,8 @@ public class Game implements Serializable {
     public void update() {
         board.clearUnits();
         if (currentArmy.getColor() == ArmyColor.BLUE) {
+            enemyArmy.clearUnitVisibility();
+            currentArmy.clearUnitVisibility();
             board.updateUnits(currentArmy.getPlacedUnits());
             List<Unit> units = enemyArmy.getPlacedUnits();
             armySetUnknown(units);
@@ -87,14 +89,14 @@ public class Game implements Serializable {
             armySetUnknown(unitsVisible );
             board.updateUnits(unitsVisible );
         }
-        enemyArmy.clearUnitVisibility();
-        currentArmy.clearUnitVisibility();
     }
 
     public void armySetUnknown(List<Unit> unitsVisible) {
         unitsVisible.forEach(unit -> {
             if (!unit.isVisibleToEnemy()) {
                 unit.setChar('X');
+            } else {
+                System.out.println();
             }
         });
     }

@@ -89,11 +89,15 @@ public class Army implements Serializable {
     }
 
     public List<Unit> getPlacedUnits() {
-        return this.units.stream().filter(Unit::isPlaced).collect(Collectors.toList());
+        return this.units.stream().filter(Unit::isPlaced).map(Unit::new).collect(Collectors.toList());
     }
 
     public boolean isDefeated() {
-        return units.stream().filter(unit -> unit instanceof Flag).noneMatch(Unit::isAlive);
+        boolean flagIsDead = units.stream().filter(unit -> unit.getRank() == Unit.Rank.Flag).noneMatch(Unit::isAlive);
+        /*List<Unit> placedUnits = this.getPlacedUnits();
+        List<Unit> movableUnits = placedUnits.stream().filter(unit -> !(unit.getRank() == Unit.Rank.Flag || unit.getRank() == Unit.Rank.Bomb)).collect(Collectors.toList());
+        boolean hasMovableUnit = !movableUnits.isEmpty();*/
+        return (flagIsDead);
     }
 
     public boolean hasUnitAtPosition(Position position) {

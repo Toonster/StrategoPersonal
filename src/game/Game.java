@@ -1,10 +1,12 @@
+package game;
+
 import army.*;
 import army.unit.*;
 import board.Board;
 import board.Tile;
 import common.Position;
 import filemanager.FileManager;
-
+import Exception.StrategoException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Serializable;
@@ -23,10 +25,10 @@ public class Game implements Serializable {
         enemyArmy = new Army(ArmyColor.RED);
     }
 
-    public void placeUnit(Unit selectedUnit, Position unitDestination) throws StrategoException {
-        if (!currentArmy.isAvailableStartingPosition(unitDestination)) {
-            throw new StrategoException("Invalid starting position!");
-        }
+    public void placeUnit(Unit selectedUnit, Position unitDestination){
+        /*if (!currentArmy.isAvailableStartingPosition(unitDestination)) {
+            *//*throw new StrategoException("Invalid starting position!");*//*
+        }*/
         currentArmy.placeUnit(selectedUnit, unitDestination);
     }
 
@@ -107,10 +109,10 @@ public class Game implements Serializable {
             List<Unit> unitsToPlace = currentArmy.getUnitsToPlace();
             Unit selectedUnit = unitsToPlace.get(rand.nextInt(unitsToPlace.size()));
             Position unitDestination = new Position(rand.nextInt(10), rand.nextInt(10));
-            try {
+            /*try {*/
                 placeUnit(selectedUnit, unitDestination);
-            } catch (StrategoException ignored) {
-            }
+           /* } catch (StrategoException ignored) {
+            }*/
         }
     }
 

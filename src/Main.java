@@ -1,9 +1,11 @@
+/*
 import army.ArmyColor;
 import army.unit.Unit;
 import board.Tile;
 import common.Position;
 import filemanager.FileManager;
-
+import game.Game;
+import Exception.StrategoException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
@@ -39,7 +41,7 @@ public abstract class Main {
         if (loadGameAnswer.equalsIgnoreCase("y")) {
             try {
                 game = loadGame();
-                showMessage("Game loaded");
+                showMessage("game.Game loaded");
             } catch (StrategoException e) {
                 showMessage(e.getMessage());
             }
@@ -245,5 +247,28 @@ public abstract class Main {
 
     public static void saveGame(String fileName, Game game) {
         FileManager.write(game, fileName);
+    }
+}
+*/
+
+import SetupView.*;
+import army.Army;
+import army.ArmyColor;
+import game.Game;
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+
+public class Main extends Application {
+
+    @Override
+    public void start(Stage stage) throws Exception {
+        SetupView view = new SetupView();
+        Game game = new Game();
+        SetupPresenter presenter = new SetupPresenter(view, game);
+        Scene scene = new Scene(presenter.getView());
+        stage.setTitle("Placement phase");
+        stage.setScene(scene);
+        stage.show();
     }
 }

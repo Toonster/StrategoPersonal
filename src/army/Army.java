@@ -12,55 +12,22 @@ import java.util.stream.Collectors;
 public class Army implements Serializable {
 
     private List<Unit> units;
-    private ArmyColor color;
+    private UnitColor color;
 
-    public Army(ArmyColor color) {
+    public Army(UnitColor color) {
         this.color = color;
         units = new ArrayList<>();
         initializeArmy();
     }
 
     public void initializeArmy() {
-        units.add(new Flag());
-        units.add(new Spy());
-        for (int i = 0; i < 8; i++) {
-            units.add(new Scout());
+        for (Rank value : Rank.values()) {
+            for (UnitColor unitColor : UnitColor.values()) {
+                for (int i = 0; i < value.getAmountOf(); i++) {
+                    units.add(new Unit(value, unitColor));
+                }
+            }
         }
-        for (int i = 0; i < 5; i++) {
-            units.add(new Miner());
-        }
-        for (int i = 0; i < 4; i++) {
-            units.add(new Sergeant());
-        }
-        for (int i = 0; i < 4; i++) {
-            units.add(new Lieutenant());
-        }
-        for (int i = 0; i < 4; i++) {
-            units.add(new Captain());
-        }
-        for (int i = 0; i < 3; i++) {
-            units.add(new Major());
-        }
-        for (int i = 0; i < 2; i++) {
-            units.add(new Colonel());
-        }
-        for (int i = 0; i < 1; i++) {
-            units.add(new General());
-        }
-        for (int i = 0; i < 1; i++) {
-            units.add(new Marshal());
-        }
-        for (int i = 0; i < 6; i++) {
-            units.add(new Bomb());
-        }
-    }
-
-    public int calculateTotalStrength() {
-        int totalStrength = 0;
-        for (Unit unit : units) {
-            totalStrength += unit.getStrength();
-        }
-        return totalStrength;
     }
 
     public Unit getUnitAtPosition(Position position) {
@@ -69,19 +36,6 @@ public class Army implements Serializable {
 
     public void placeUnit(Unit unit, Position position) {
         unit.place(position);
-    }
-
-    public boolean isAvailableStartingPosition(Position position) {
-        if (hasUnitAtPosition(position)) {
-            return false;
-        }
-        if (this.color.equals(ArmyColor.RED)) {
-            return position.getX() < 10 && position.getX() >= 0 && position.getY() >= 0 && position.getY() < 4;
-        }
-        if (this.color.equals(ArmyColor.BLUE)) {
-            return position.getX() < 10 && position.getX() >= 0 && position.getY() >= 6 && position.getY() < 10;
-        }
-        return false;
     }
 
     public List<Unit> getUnitsToPlace() {
@@ -107,7 +61,7 @@ public class Army implements Serializable {
         return this.units.stream().anyMatch(unit -> !unit.isPlaced());
     }
 
-    public ArmyColor getColor() {
+    public UnitColor getColor() {
         return this.color;
     }
 
@@ -117,15 +71,6 @@ public class Army implements Serializable {
 
     public void updateUnitVisibility() {
         this.units.forEach(Unit::updateVisibleToEnemy);
-    }
-
-    public void giveStandardPosToUnits() {
-        int index = 0;
-        for (int y = 6; y < 10; y++) {
-            for (int x = 0; x < 10; x++) {
-                units.get(index++).place(new Position(x, y));
-            }
-        }
     }
 
     public Unit selectRandomPlacedUnit() {

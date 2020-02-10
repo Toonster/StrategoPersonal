@@ -8,45 +8,37 @@ import java.util.List;
 
 public class Unit implements Serializable {
 
+    private final Rank rank;
+    private final UnitColor color;
     protected Position position;
     private boolean alive = true;
-    private final int strength;
-    private final int movementSpeed;
-    private final char character;
-    private final Rank rank;
     private int visibleForTurns = 0;
 
-    public enum Rank {
-        Bomb, Captain, Colonel,
-        Flag, General, Lieutenant,
-        Major, Marshal, Miner,
-        Scout, Sergeant, Spy
+    public Unit(Rank rank, UnitColor color) {
+        this.rank = rank;
+        this.color = color;
     }
 
-    public Unit(int strength, int movementSpeed, char character, Rank rank) {
-        this.strength = strength;
-        this.movementSpeed = movementSpeed;
-        this.character = character;
-        this.rank = rank;
+    public Rank getRank() {
+        return rank;
     }
 
     public void battle(Unit enemyUnit) {
-        if (this.strength > enemyUnit.strength) {
-            this.position = new Position(enemyUnit.getX(), enemyUnit.getY());
+        Rank enemyRank = enemyUnit.getRank();
+        if (rank.getBattleResult(enemyRank) == BattleResult.WIN) {
+            this.place(new Position(enemyUnit.getX(), enemyUnit.getY()));
             enemyUnit.die();
             return;
         }
-        if (this.strength == enemyUnit.strength) {
+        if (rank.getBattleResult(enemyRank) == BattleResult.DRAW) {
             enemyUnit.die();
             die();
             return;
         }
-        die();
-        enemyUnit.setVisibleToEnemy();
-    }
-
-    public int getStrength() {
-        return this.strength;
+        if (rank.getBattleResult(enemyRank) == BattleResult.LOSS) {
+            die();
+            enemyUnit.setVisibleToEnemy();
+        }
     }
 
     public void die() {
@@ -61,7 +53,7 @@ public class Unit implements Serializable {
     public boolean canMoveTo(Position destination) {
         int deltaX = Math.abs(this.position.getX() - destination.getX());
         int deltaY = Math.abs(this.position.getY() - destination.getY());
-        return (deltaX <= this.movementSpeed && deltaY == 0) || (deltaY <= this.movementSpeed && deltaX == 0);
+        return (deltaX <= this.rank.getMovementspeed() && deltaY == 0) || (deltaY <= this.rank.getMovementspeed() && deltaX == 0);
     }
 
     public void place(Position position) {
@@ -113,10 +105,6 @@ public class Unit implements Serializable {
         return destinationPath;
     }
 
-    public Character getCharacter() {
-        return this.character;
-    }
-
     public void setVisibleToEnemy() {
         visibleForTurns = 3;
     }
@@ -129,9 +117,5 @@ public class Unit implements Serializable {
 
     public boolean isVisibleToEnemy() {
         return visibleForTurns > 0;
-    }
-
-    public Rank getRank() {
-        return this.rank;
     }
 }

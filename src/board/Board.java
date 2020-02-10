@@ -20,12 +20,11 @@ public class Board {
         for (int y = 0; y < HEIGHT; y++) {
             for (int x = 0; x < WIDTH; x++) {
                 if ((y == 4 || y == 5) && (x == 2 || x == 3 || x == 6 || x == 7)) {
-                    Tile waterTile = new Tile(new Water());
-                    waterTile.update(waterTile.getSurfaceCharacter());
+                    Tile waterTile = new Tile(Surface.WATER);
                     gameField[x][y] = waterTile;
                     continue;
                 }
-                gameField[x][y] = new Tile(new Grass());
+                gameField[x][y] = new Tile(Surface.GRASS);
             }
         }
     }
@@ -43,7 +42,7 @@ public class Board {
     public void updateUnits(List<Unit> units, boolean visible) {
         for (Unit unit : units) {
             char unitCharacter = unit.isVisibleToEnemy() ? unit.getCharacter() : visible ? unit.getCharacter() : 'X';
-            gameField[unit.getX()][unit.getY()].update(unitCharacter);
+            gameField[unit.getX()][unit.getY()].update(unit);
         }
     }
 
@@ -65,7 +64,7 @@ public class Board {
     }
 
     public boolean tileIsFree(Position tilePosition) {
-        return this.gameField[tilePosition.getX()][tilePosition.getY()].isFree();
+        return this.gameField[tilePosition.getX()][tilePosition.getY()].isOccupied();
     }
 
     public boolean tileIsAccessible(Position tilePosition) {

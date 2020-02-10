@@ -7,6 +7,8 @@ import board.Tile;
 import common.Position;
 import filemanager.FileManager;
 import Exception.StrategoException;
+import turn.Turn;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Serializable;
@@ -18,17 +20,15 @@ public class Game implements Serializable {
     private Army currentArmy;
     private Army enemyArmy;
     private Board board;
+    private Turn turn;
 
     public Game() {
         board = new Board();
-        currentArmy = new Army(ArmyColor.BLUE);
-        enemyArmy = new Army(ArmyColor.RED);
+        currentArmy = new Army(UnitColor.BLUE);
+        enemyArmy = new Army(UnitColor.RED);
     }
 
     public void placeUnit(Unit selectedUnit, Position unitDestination){
-        /*if (!currentArmy.isAvailableStartingPosition(unitDestination)) {
-            *//*throw new StrategoException("Invalid starting position!");*//*
-        }*/
         currentArmy.placeUnit(selectedUnit, unitDestination);
     }
 
@@ -68,7 +68,7 @@ public class Game implements Serializable {
         enemyArmy.updateUnitVisibility();
         List<Unit> currentUnits = currentArmy.getPlacedUnits();
         List<Unit> enemyUnits = enemyArmy.getPlacedUnits();
-        boolean isPlayer = currentArmy.getColor() == ArmyColor.BLUE;
+        boolean isPlayer = currentArmy.getColor() == UnitColor.BLUE;
         board.updateUnits(currentUnits, isPlayer);
         board.updateUnits(enemyUnits, !isPlayer);
     }
@@ -140,7 +140,7 @@ public class Game implements Serializable {
         return enemyArmy.getDeadUnits();
     }
 
-    public ArmyColor getArmyColor() {
+    public UnitColor getArmyColor() {
         return currentArmy.getColor();
     }
 
@@ -148,7 +148,7 @@ public class Game implements Serializable {
         return currentArmy.selectRandomPlacedUnit();
     }
 
-    public ArmyColor getWinner() {
+    public UnitColor getWinner() {
         return this.currentArmy.isDefeated() ? this.enemyArmy.getColor() : this.currentArmy.getColor();
     }
 

@@ -1,36 +1,33 @@
 package board;
 
+import army.unit.Unit;
+
 public class Tile {
 
-    private char character;
+    private Unit unit;
     private final Surface surface;
 
     public Tile(Surface surface) {
         this.surface = surface;
     }
 
-    public void update(char character) {
-        this.character = character;
+    public void update(Unit unit) {
+        this.unit = unit;
     }
 
     public void clear() {
-        character = ' ';
+        unit = null;
     }
 
-    public boolean isFree() {
-        return character == ' ';
+    public boolean isOccupied() {
+        return unit != null;
     }
 
     public boolean isAccessible() {
         return this.surface.isAccessible();
     }
 
-    public char getSurfaceCharacter() {
-        return this.surface.getCharacter();
-    }
-
-    @Override
-    public String toString() {
-        return Character.toString(character);
+    public Unit getUnit() {
+        return unit;
     }
 }
